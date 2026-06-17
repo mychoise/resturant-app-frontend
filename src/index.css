@@ -1,4 +1,12 @@
 @import "tailwindcss";
+#root{
+    margin:0;
+    padding: 0;
+}
+
+body{
+    background-color: #FCF9F5;
+}
 
 @font-face {
     font-family: 'font1';
