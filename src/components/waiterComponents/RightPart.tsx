@@ -1,7 +1,9 @@
 import { Minus } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const RightPart = ({ selectedTable }: { selectedTable: string | null }) => {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="right-part bg-[#F6F3EF] w-120 rounded-xl max-h-80 p-10 border border-[#C8C7BF]">
@@ -23,6 +25,8 @@ const RightPart = ({ selectedTable }: { selectedTable: string | null }) => {
           </div>
           <hr className="border-[#C8C7BF] mt-5" />
           <button
+            disabled={!selectedTable}
+            onClick={() => navigate("/menu")}
             className={`text-[14px] w-full ${selectedTable ? "bg-black cursor-pointer" : "bg-[#C9C6C2] cursor-not-allowed"}   text-white font-bold mt-5 rounded-xl  pt-3 pb-3 uppercase font-[font2] tracking-wide text-center border border-[#C8C7BF]`}
           >
             Proceed to menu

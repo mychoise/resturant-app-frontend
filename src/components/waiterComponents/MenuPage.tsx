@@ -20,7 +20,6 @@ const MenuPage = () => {
   };
 
   const increaseQantity = (itemId: number) => {
-    const item = cartItems.filter((item: any) => item.id === itemId);
     setCartItems((prevItems: any) =>
       prevItems.map((item: any) =>
         item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
@@ -29,7 +28,6 @@ const MenuPage = () => {
   };
 
   const decreaseQantity = (itemId: number) => {
-    const item = cartItems.filter((item: any) => item.id === itemId);
     setCartItems((prevItems: any) =>
       prevItems.map((item: any) =>
         item.id === itemId
@@ -47,11 +45,15 @@ const MenuPage = () => {
 
   console.log(cartItems);
 
+  const filteredItems = menuItems.filter(
+    (item) => item.category === selectedCategory,
+  );
+
   return (
-    <div>
+    <div className="ml-10 mt-10 bg-[#FCF9F5]">
       <div className="flex">
         <div className="w-[77%]">
-          <Header />
+          <Header page="select-menu" />
 
           {/*search*/}
           <div className="relative w-115 mt-7">
@@ -72,7 +74,14 @@ const MenuPage = () => {
                 <button
                   key={index}
                   className={`${selectedCategory === item.name ? "bg-black text-white" : "bg-white border border-[#C8C7BF] text-[#474741]"} rounded-3xl pr-5 pl-5 cursor-pointer pb-2 pt-2`}
-                  onClick={() => setSelectedCategory(item.name)}
+                  onClick={() => {
+                    setSelectedCategory(item.name);
+                    setmenuItems(
+                      menuItems.filter(
+                        (menuItem) => menuItem.category === item.name,
+                      ),
+                    );
+                  }}
                 >
                   <h1 className="font-[font2] tracking-wide">{item.name}</h1>
                 </button>
@@ -83,7 +92,7 @@ const MenuPage = () => {
           {/*<hr className="mt-5 border-[#C8C7BF]"></hrs>*/}
           <div className="mt-9 border-t border-[#C8C7BF]  p-10 -ml-10">
             <div className="flex flex-row flex-wrap gap-8">
-              {menuItems.map((item) => (
+              {filteredItems.map((item) => (
                 <div
                   key={item.id}
                   className="w-95 overflow-hidden hover:border-[#735C00] cursor-pointer bg-[#F9F3EB] border border-[#C8C7BF] mb-2 rounded-2xl"

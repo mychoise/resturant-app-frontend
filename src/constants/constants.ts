@@ -76,6 +76,7 @@ export const menuItems = [
     price: "$18.00",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+    category: "Starters",
   },
   {
     id: 2,
@@ -84,6 +85,7 @@ export const menuItems = [
     price: "$18.00",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+    category: "Mains",
   },
   {
     id: 3,
@@ -92,6 +94,7 @@ export const menuItems = [
     price: "$18.00",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+    category: "Starters",
   },
   {
     id: 4,
@@ -100,6 +103,7 @@ export const menuItems = [
     price: "$18.00",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+    category: "Desserts",
   },
   {
     id: 5,
@@ -108,6 +112,7 @@ export const menuItems = [
     price: "$18.00",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+    category: "Beverages",
   },
   {
     id: 6,
@@ -116,6 +121,7 @@ export const menuItems = [
     price: "$18.00",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+    category: "Mains",
   },
   {
     id: 7,
@@ -124,5 +130,6 @@ export const menuItems = [
     price: "$18.00",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+    category: "Desserts",
   },
 ];
