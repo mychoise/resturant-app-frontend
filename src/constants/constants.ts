@@ -50,3 +50,79 @@ export const table = [
     status: "available",
   },
 ];
+export const menuCategory = [
+  {
+    id: 1,
+    name: "Starters",
+  },
+  {
+    id: 2,
+    name: "Beverages",
+  },
+  {
+    id: 3,
+    name: "Desserts",
+  },
+  {
+    id: 4,
+    name: "Mains",
+  },
+];
+export const menuItems = [
+  {
+    id: 1,
+    name: "Heirloom Burrata",
+    description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
+    price: "$18.00",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+  },
+  {
+    id: 2,
+    name: "Heirloom Burrata",
+    description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
+    price: "$18.00",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+  },
+  {
+    id: 3,
+    name: "Heirloom Burrata",
+    description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
+    price: "$18.00",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+  },
+  {
+    id: 4,
+    name: "Heirloom Burrata",
+    description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
+    price: "$18.00",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+  },
+  {
+    id: 5,
+    name: "Heirloom Burrata",
+    description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
+    price: "$18.00",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+  },
+  {
+    id: 6,
+    name: "Heirloom Burrata",
+    description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
+    price: "$18.00",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+  },
+  {
+    id: 7,
+    name: "Heirloom Burrata",
+    description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
+    price: "$18.00",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
+  },
+];

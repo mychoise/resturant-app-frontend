@@ -1,78 +1,52 @@
 import Header from "./header";
 import { Minus, Plus, Search, X } from "lucide-react";
 import { useState } from "react";
+import { menuCategory, menuItems } from "../../constants/constants";
 
 const MenuPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("Starters");
-  const [quantities, setQuantities] = useState<Record<number, number>>({});
+  const [cartItems, setCartItems] = useState<any>([]);
 
-  console.log(quantities);
-
-  const decreaseQuantity = (itemId: number) => {
-    setQuantities((currentQuantities) => ({
-      ...currentQuantities,
-      [itemId]: Math.max(0, (currentQuantities[itemId] ?? 0) - 1),
-    }));
+  const addToCart = (item: any) => {
+    setCartItems((prevItems: any) => [
+      ...prevItems,
+      {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: 1,
+      },
+    ]);
   };
 
-  const increaseQuantity = (itemId: number) => {
-    setQuantities((currentQuantities) => ({
-      ...currentQuantities,
-      [itemId]: (currentQuantities[itemId] ?? 0) + 1,
-    }));
+  const increaseQantity = (itemId: number) => {
+    const item = cartItems.filter((item: any) => item.id === itemId);
+    setCartItems((prevItems: any) =>
+      prevItems.map((item: any) =>
+        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
+      ),
+    );
   };
 
-  const updateQuantity = (itemId: number, value: string) => {
-    setQuantities((currentQuantities) => ({
-      ...currentQuantities,
-      [itemId]: Math.max(0, Number.parseInt(value, 10) || 0),
-    }));
+  const decreaseQantity = (itemId: number) => {
+    const item = cartItems.filter((item: any) => item.id === itemId);
+    setCartItems((prevItems: any) =>
+      prevItems.map((item: any) =>
+        item.id === itemId
+          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+          : item,
+      ),
+    );
   };
 
-  const menuCategory = [
-    {
-      id: 1,
-      name: "Starters",
-    },
-    {
-      id: 2,
-      name: "Beverages",
-    },
-    {
-      id: 3,
-      name: "Desserts",
-    },
-    {
-      id: 4,
-      name: "Mains",
-    },
-  ];
-  const menuItems = [
-    {
-      id: 1,
-      name: "Heirloom Burrata",
-      description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
-      price: "$18.00",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
-    },
-    {
-      id: 2,
-      name: "Heirloom Burrata",
-      description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
-      price: "$18.00",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
-    },
-    {
-      id: 3,
-      name: "Heirloom Burrata",
-      description: "Fresh burrata, basil pesto, pine nuts, balsamic glaze.",
-      price: "$18.00",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDJbnUT46S7Rl0lraqK5fR4GtrBrArUPOmYMcM9xdF9oI_Osp6SyA6WM9kL41wre9VJZ5YMM4TEIx-5ISkA8I1MY7I-jY7jsQ2JI7w1wEVjJagbOGTk65222fE3X2sQDSdLHExdQ3ThjSGf8M5BrWJ2dfHPHHZC8iumbYQ-BZ7Qo9BHvX1qqDcL9O-fRIo-_ClvtU-vr_CD6U4iqZgAiKX9tBbk9Gmm-PKM5x6yTWWBvIUOSOZEg0La",
-    },
-  ];
+  const deleteItem = (itemId: number) => {
+    setCartItems((prevItems: any) =>
+      prevItems.filter((item: any) => item.id !== itemId),
+    );
+  };
+
+  console.log(cartItems);
+
   return (
     <div>
       <div className="flex">
@@ -130,10 +104,46 @@ const MenuPage = () => {
                       <h1 className="font-[font2] text-[17px] font-bold mt-2">
                         {item.price}
                       </h1>
-                      <div className="flex  items-center font-[font2] justify-center border border-[#C8C7BF] rounded-3xl pr-4 pl-4 pt-2 pb-2 gap-2">
-                        <Plus size={16} />
-                        <button className="cursor-pointer">Add</button>
-                      </div>
+                      {cartItems.some(
+                        (cartItem: any) => cartItem.id === item.id,
+                      ) ? (
+                        <div className="w-31.7">
+                          <div className="flex items-center gap-2 bg-[#F0EDE9] border border-[#FED65B] rounded-full px-3 py-1">
+                            <button
+                              onClick={() => decreaseQantity(item.id)}
+                              className="text-gray-400 hover:text-gray-600 text-xl w-7 h-7 flex items-center justify-center transition"
+                            >
+                              <Minus size={16} />
+                            </button>
+                            <input
+                              readOnly={true}
+                              value={
+                                cartItems.find(
+                                  (cartItem: any) => cartItem.id === item.id,
+                                )?.quantity || 0
+                              }
+                              type="number"
+                              className="w-8 text-center font-[font5] text-gray-900 bg-transparent border-none outline-none"
+                            />
+                            <button
+                              onClick={() => increaseQantity(item.id)}
+                              className="bg-yellow-300 hover:bg-yellow-400 text-gray-800 text-xl w-8 h-8 flex items-center justify-center rounded-full transition font-bold"
+                            >
+                              <Plus size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex  items-center font-[font2] justify-center border border-[#C8C7BF] rounded-3xl pr-4 pl-4 pt-2 pb-2 gap-2">
+                          <Plus size={16} />
+                          <button
+                            onClick={() => addToCart(item)}
+                            className="cursor-pointer"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -178,37 +188,56 @@ const MenuPage = () => {
             <div></div>
             <div className="w-full pt-5">
               {/*ugf*/}
-              <div className=" flex mb-6 pb-2 border-[#F0EEE8] border-b-2 justify-between">
-                <div className=" flex gap-5">
-                  <div className="bg-[#FDFBF9] border border-[#EBE8E4] flex gap-3  flex-col justify-center items-center  w-9 rounded-3xl h-22">
-                    <button>
-                      <Plus className="text-[#474741]" size={14} />
-                    </button>
-                    <div className=" w-[70%] pl-2">
-                      <input
-                        defaultValue={0}
-                        type="number"
-                        className="w-full font-[font5] outline-0 bg-transparent border-none text-[#181916]"
-                      ></input>
+              {cartItems.length === 0 && (
+                <div className=" w-full h-90 items-center justify-center flex">
+                  <h1 className="font-[font2] text-[#474741] text-[16px]">
+                    NO ITEM IN CART
+                  </h1>
+                </div>
+              )}
+
+              {cartItems.map((item: any) => (
+                <div
+                  key={item.id}
+                  className=" flex mb-6 pb-2 border-[#F0EEE8] border-b-2 justify-between"
+                >
+                  <div className=" flex gap-5">
+                    <div className="bg-[#FDFBF9] border border-[#EBE8E4] flex gap-3  flex-col justify-center items-center  w-9 rounded-3xl h-22">
+                      <button onClick={() => increaseQantity(item.id)}>
+                        <Plus className="text-[#474741]" size={14} />
+                      </button>
+                      <div className=" w-[70%] pl-2">
+                        <input
+                          readOnly={true}
+                          value={
+                            cartItems.find(
+                              (cartItem: any) => cartItem.id === item.id,
+                            )?.quantity || 0
+                          }
+                          type="number"
+                          className="w-full font-[font5] outline-0 bg-transparent border-none text-[#181916]"
+                        ></input>
+                      </div>
+                      <button onClick={() => decreaseQantity(item.id)}>
+                        <Minus className="text-[#474741]" size={14} />
+                      </button>
                     </div>
-                    <button>
-                      <Minus className="text-[#474741]" size={14} />
-                    </button>
+                    <div className="mt-1">
+                      <h1 className="font-[font5] text-[#181916] text-[17px]">
+                        {item.name}
+                      </h1>
+                    </div>
                   </div>
-                  <div className="mt-1">
-                    <h1 className="font-[font5] text-[#181916] text-[17px]">
-                      Heirloom Burrata
-                    </h1>
+                  <div className="flex flex-col items-center gap-2">
+                    <h1 className="font-[font5] mt-1 ">{item.price}</h1>
+                    <X
+                      onClick={() => deleteItem(item.id)}
+                      size={17}
+                      className="-mr-9 text-[#927F83] cursor-pointer mt-2 hover:text-red-500"
+                    />
                   </div>
                 </div>
-                <div className="flex flex-col items-center gap-2">
-                  <h1 className="font-[font5] mt-1 ">$36.00</h1>
-                  <X
-                    size={17}
-                    className="-mr-9 text-[#927F83] cursor-pointer mt-2 hover:text-red-500"
-                  />
-                </div>
-              </div>{" "}
+              ))}
             </div>
           </div>
           <div className="w-full h-40  flex items-center justify-center">
