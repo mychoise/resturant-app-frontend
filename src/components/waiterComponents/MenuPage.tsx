@@ -44,7 +44,6 @@ const MenuPage = () => {
   };
 
   console.log(cartItems);
-
   const filteredItems = menuItems.filter(
     (item) => item.category === selectedCategory,
   );
