@@ -1,4 +1,3 @@
-import { Minus } from "lucide-react";
 import React, { useState } from "react";
 import Header from "./header";
 import LeftPart from "./LeftPart";
