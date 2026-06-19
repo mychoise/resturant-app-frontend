@@ -1,11 +1,21 @@
 import Header from "../../components/waiterComponents/header";
 import { Minus, Plus, Search, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { menuCategory, menuItems } from "../../constants/constants";
+import { useWaiterStore } from "../../store/waiter.store";
+import { useNavigate } from "react-router-dom";
 
 const MenuPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("Starters");
   const [cartItems, setCartItems] = useState<any>([]);
+  const navigate = useNavigate();
+  const { table } = useWaiterStore();
+
+  useEffect(() => {
+    if (!table) {
+      navigate("/");
+    }
+  }, [table, navigate]);
 
   const addToCart = (item: any) => {
     setCartItems((prevItems: any) => [
@@ -176,7 +186,7 @@ const MenuPage = () => {
               <h1 className="text-[18px] font-[font2] uppercase text-[#474741]">
                 Table
               </h1>
-              <h1 className="text-[18px] font-[font5] text-center">03</h1>
+              <h1 className="text-[18px] font-[font5] text-center">{table}</h1>
             </div>
             <div className=" border h-[80%] mt-3 border-[#F0EEE8]"></div>
             <div className="mt-4 mr-7">
