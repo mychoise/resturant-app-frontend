@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Header from "./header";
-import LeftPart from "./LeftPart";
-import RightPart from "./RightPart";
+import Header from "../../components/waiterComponents/header";
+import LeftPart from "../../components/waiterComponents/LeftPart";
+import RightPart from "../../components/waiterComponents/RightPart";
 const TablePage = () => {
   const [selectedTable, setSelectedTable] = useState(null);
 

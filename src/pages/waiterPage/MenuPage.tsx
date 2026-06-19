@@ -1,4 +1,4 @@
-import Header from "./header";
+import Header from "../../components/waiterComponents/header";
 import { Minus, Plus, Search, X } from "lucide-react";
 import { useState } from "react";
 import { menuCategory, menuItems } from "../../constants/constants";
