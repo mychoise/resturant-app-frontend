@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "../../components/waiterComponents/header";
 import LeftPart from "../../components/waiterComponents/LeftPart";
 import RightPart from "../../components/waiterComponents/RightPart";

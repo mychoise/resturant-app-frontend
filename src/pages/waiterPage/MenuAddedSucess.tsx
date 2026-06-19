@@ -1,12 +1,24 @@
-import React from "react";
+import { useEffect } from "react";
 import { Check, Grid2x2, Printer } from "lucide-react";
+import { useWaiterStore } from "../../store/waiter.store";
+import { useNavigate } from "react-router-dom";
 
 const MenuAddedSucess = () => {
-  const items = [
-    { qty: 2, name: "Heirloom Burrata", price: 36.0 },
-    { qty: 1, name: "Seasonal Salad", price: 18.0 },
-    { qty: 1, name: "San Pellegrino 750ml", price: 9.0 },
-  ];
+  // const items = [
+  //   { qty: 2, name: "Heirloom Burrata", price: 36.0 },
+  //   { qty: 1, name: "Seasonal Salad", price: 18.0 },
+  //   { qty: 1, name: "San Pellegrino 750ml", price: 9.0 },
+  // ];
+  const { table, cart: items } = useWaiterStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!table || items.length === 0) {
+      // Redirect to floor plan if no table or items
+      navigate("/");
+    }
+  }, [table, items, navigate]);
+
   const total = items.reduce((sum, item) => sum + item.price, 0);
   return (
     <div className="flex items-center justify-center h-screen">
@@ -39,10 +51,13 @@ const MenuAddedSucess = () => {
 
             <div className="flex items-center justify-between mt-1">
               <h1 className="text-xl font-[font4] font-bold text-stone-900">
-                Table No: 05 - VIP
+                Table No: {table?.table_number}
               </h1>
               <span className="text-[16px] font-[font2] text-stone-500">
-                8:45 PM
+                {new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </span>
             </div>
 
@@ -61,7 +76,7 @@ const MenuAddedSucess = () => {
                   className="flex justify-between text-stone-900 font-[font2] "
                 >
                   <span>
-                    {item.qty}
+                    {item.quantity}
                     <span className="mx-1 font-[font2]">&times;</span>
                     {item.name}
                   </span>

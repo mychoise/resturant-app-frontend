@@ -40,16 +40,17 @@ const LeftPart = ({ selectedTable, setSelectedTable }) => {
             {table.map((item, index) => (
               <div key={index}>
                 <button
-                  disabled={item.status === "occupied"}
-                  onClick={() => setSelectedTable(item.tableNo)}
-                  className={`w-21  ${item.status === "occupied" ? "bg-[#EBE9E5]  cursor-not-allowed" : selectedTable === item.tableNo ? "bg-[#FFE088] cursor-pointer" : "bg-[#FFFFFF] cursor-pointer"}  ${item.value === "vip" ? "w-40" : "w-21"} ${item.value === "vip" ? "font-[font4] text-2xl" : "font-[font2]"} h-21 rounded-xl  border-2 border-[#C8C7BF]  flex items-center justify-center   font-bold`}
+                  disabled={item.is_occupied === true}
+                  onClick={() => setSelectedTable(item)}
+                  className={`w-21  ${item.is_occupied === true ? "bg-[#EBE9E5]  cursor-not-allowed" : selectedTable?.table_number === item.table_number ? "bg-[#FFE088] cursor-pointer" : "bg-[#FFFFFF] cursor-pointer"}  ${item.value === "vip" ? "w-40" : "w-21"} ${item.value === "vip" ? "font-[font4] text-2xl" : "font-[font2]"} h-21 rounded-xl  border-2 border-[#C8C7BF]  flex items-center justify-center   font-bold`}
                 >
-                  {item.value === "vip"
+                  {String(item.table_number).padStart(2, "0")}
+                  {/*{item.value === "vip"
                     ? item.text + "-" + "VIP"
-                    : item.tableNo}
+                    : String(item.table_number).padStart(2, "0")}*/}
                 </button>{" "}
                 <h1 className="text-center mt-0.5 text-[#424241] font-[font1] text-[13.5px]">
-                  {item.guest}
+                  2 guests
                 </h1>
               </div>
             ))}

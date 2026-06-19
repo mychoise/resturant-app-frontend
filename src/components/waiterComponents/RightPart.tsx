@@ -20,7 +20,11 @@ const RightPart = ({ selectedTable }: { selectedTable: string | null }) => {
             </div>
             <h1 className="mr-5 font-[font2]  font-bold text-[16px]">
               {" "}
-              {selectedTable ? `Table ${selectedTable}` : <Minus />}
+              {selectedTable ? (
+                `Table ${String(selectedTable.table_number).padStart(2, "0")}`
+              ) : (
+                <Minus />
+              )}
             </h1>
           </div>
           <hr className="border-[#C8C7BF] mt-5" />
