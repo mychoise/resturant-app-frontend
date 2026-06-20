@@ -7,6 +7,8 @@ import { socket } from "./lib/socket";
 import WorkflowBoard from "./pages/kitchenPage/kitchen";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import { useWaiterStore } from "./store/waiter.store";
+import { useCheckAuth } from "./hooks/auth.hook";
 
 const App = () => {
   useEffect(() => {
@@ -25,14 +27,87 @@ const App = () => {
     };
   }, []);
 
+  const { user, setUser } = useWaiterStore();
+  const { isLoading, data } = useCheckAuth();
+
+  useEffect(() => {
+    if (data) {
+      console.log("Auth check successful, user data:", data);
+      setUser(data);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return (
+      <div className="bg-[#FCF9F5] w-full min-h-screen flex items-center justify-center">
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#FCF9F5] w-full min-h-screen">
       <Routes>
-        <Route path="/" element={<TablePage />} />
-        <Route path="/menu" element={<MenuPage />} />
-        <Route path="/success" element={<MenuAddedSucess />} />
-        <Route path="/kitchen" element={<WorkflowBoard />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            user && user?.role === "waiter" ? (
+              <TablePage />
+            ) : user ? (
+              <WorkflowBoard />
+            ) : (
+              <Login />
+            )
+          }
+        />
+        <Route
+          path="/menu"
+          element={
+            user && user?.role === "waiter" ? (
+              <MenuPage />
+            ) : user ? (
+              <WorkflowBoard />
+            ) : (
+              <Login />
+            )
+          }
+        />
+        <Route
+          path="/success"
+          element={
+            user && user?.role === "waiter" ? (
+              <MenuAddedSucess />
+            ) : user ? (
+              <WorkflowBoard />
+            ) : (
+              <Login />
+            )
+          }
+        />
+        <Route
+          path="/kitchen"
+          element={
+            user && user?.role === "kitchen" ? (
+              <WorkflowBoard />
+            ) : user ? (
+              <TablePage />
+            ) : (
+              <Login />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            user && user?.role === "waiter" ? (
+              <TablePage />
+            ) : user ? (
+              <WorkflowBoard />
+            ) : (
+              <Login />
+            )
+          }
+        />
         <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>

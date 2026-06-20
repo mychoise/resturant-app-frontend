@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { Pencil } from "lucide-react";
+import { useLogin } from "../hooks/auth.hook";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [cipher, setCipher] = useState("");
 
+  const { mutate } = useLogin();
+
   const hadleSubmit = () => {
-    const payload = { email, cipher };
+    const payload = { email, password: cipher };
     console.log(payload);
+    mutate(payload);
   };
 
   return (

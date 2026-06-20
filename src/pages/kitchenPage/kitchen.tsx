@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, ChevronsRight } from "lucide-react";
+import { socket } from "../../lib/socket";
 
-type TicketItem = {
-  qty: string;
-  name: string;
+type OrderItem = {
+  id: string;
+  menu_item_id: string;
+  item_name: string;
+  quantity: number;
+  status: "pending" | "preparing" | "ready" | "served";
+  order_id?: string;
 };
 
-type Ticket = {
+type Order = {
   id: string;
-  meta: string;
-  items: TicketItem[];
-  rush: boolean;
-  note?: string;
-};
-
-type Column = {
-  id: string;
-  title: string;
-  dotColor: string;
-  tickets: Ticket[];
+  table_id: string;
+  table_number?: number;
+  status: string;
+  items: OrderItem[];
+  ordered_at?: string;
 };
 
 type ServedTicket = {
@@ -27,121 +26,185 @@ type ServedTicket = {
   summary: string;
 };
 
-const initialColumns: Record<string, Column> = {
-  pending: {
-    id: "pending",
-    title: "Pending",
-    dotColor: "#9ca3af",
-    tickets: [
-      {
-        id: "1045",
-        meta: "Table 04 • 02:30 min",
-        items: [{ qty: "1x", name: "Margherita Pizza" }],
-        rush: false,
-      },
-      {
-        id: "1046",
-        meta: "Table 02 • 00:45 min",
-        items: [{ qty: "2x", name: "Caesar Salad" }],
-        rush: false,
-      },
-    ],
-  },
-  preparing: {
-    id: "preparing",
-    title: "Preparing",
-    dotColor: "#fb923c",
-    tickets: [
-      {
-        id: "1044",
-        meta: "Table 08 • 08:12 min",
-        items: [
-          { qty: "1x", name: "Spicy Rigatoni" },
-          { qty: "1x", name: "Garlic Bread" },
-        ],
-        rush: false,
-      },
-      {
-        id: "1042",
-        meta: "Table 12 • 15:42 min (RUSH)",
-        items: [{ qty: "2x", name: "Truffle Burger" }],
-        rush: true,
-        note: "No Onions, Medium Rare",
-      },
-    ],
-  },
-  ready: {
-    id: "ready",
-    title: "Ready",
-    dotColor: "#4ade80",
-    tickets: [
-      {
-        id: "1039",
-        meta: "Delivery • UberEats",
-        items: [
-          { qty: "3x", name: "Classic Hot Dog" },
-          { qty: "2x", name: "Large Fries" },
-        ],
-        rush: false,
-      },
-    ],
-  },
+const STATUS_FLOW: Record<string, string> = {
+  pending: "preparing",
+  preparing: "ready",
+  ready: "served",
 };
 
-const servedTickets: ServedTicket[] = [
-  {
-    id: "1038",
-    meta: "Table 02 • Served 5m ago",
-    summary: "1x Caesar Salad, 1x Iced Tea",
-  },
-  {
-    id: "1037",
-    meta: "Table 01 • Served 12m ago",
-    summary: "2x Margherita Pizza, 1x Coke",
-  },
+const STATUS_OPTIONS: { value: OrderItem["status"]; label: string }[] = [
+  { value: "pending", label: "Pending" },
+  { value: "preparing", label: "Preparing" },
+  { value: "ready", label: "Ready" },
+  { value: "served", label: "Served" },
 ];
 
-function TicketCard({
-  ticket,
-  columnId,
+const COLUMN_META: Record<string, { title: string; dotColor: string }> = {
+  pending: { title: "Pending", dotColor: "#9ca3af" },
+  preparing: { title: "Preparing", dotColor: "#fb923c" },
+  ready: { title: "Ready", dotColor: "#4ade80" },
+};
+
+function getOrderMeta(order: Order) {
+  return `Table ${order.table_number ?? order.table_id}`;
+}
+
+function normalizeOrderPayload(payload: any): Order | null {
+  const raw = payload?.order ?? payload;
+  if (!raw || !raw.id) return null;
+
+  return {
+    id: raw.id,
+    table_id: raw.table_id,
+    table_number: raw.table_number,
+    status: raw.status ?? "pending",
+    ordered_at: raw.ordered_at,
+    items: Array.isArray(raw.items)
+      ? raw.items.map((item: any) => ({
+          id: item.id,
+          menu_item_id: item.menu_item_id,
+          item_name: item.item_name,
+          quantity: item.quantity,
+          status: item.status ?? "pending",
+          order_id: item.order_id ?? raw.id,
+        }))
+      : [],
+  };
+}
+
+function ItemRow({
+  item,
   onAdvance,
+  onSetStatus,
 }: {
-  ticket: Ticket;
-  columnId: string;
-  onAdvance: (ticketId: string) => void;
+  item: OrderItem;
+  order: Order;
+  onAdvance: (orderItemId: string, currentStatus: string) => void;
+  onSetStatus: (orderItemId: string, newStatus: string) => void;
 }) {
-  const isPending = columnId === "pending";
-  const isPreparing = columnId === "preparing";
-  const isReady = columnId === "ready";
-
-  const borderColor = ticket.rush
-    ? "#7f1d1d"
-    : isPreparing
-      ? "#7c4a23"
-      : isReady
-        ? "#14532d"
-        : "#27272a";
-
-  const bgColor = ticket.rush
-    ? "rgba(127,29,29,0.25)"
-    : isPreparing
-      ? "rgba(124,74,35,0.2)"
-      : isReady
-        ? "rgba(20,83,45,0.25)"
-        : "#18181b";
+  const buttonLabel =
+    item.status === "pending"
+      ? "Start"
+      : item.status === "preparing"
+        ? "Ready"
+        : item.status === "ready"
+          ? "Serve"
+          : null;
 
   return (
     <div
       style={{
-        background: bgColor,
-        border: `1px solid ${borderColor}`,
-        borderLeft: ticket.rush
-          ? "3px solid #ef4444"
-          : isPreparing
-            ? "3px solid #f59e0b"
-            : isReady
-              ? "3px solid #22c55e"
-              : `1px solid ${borderColor}`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 8,
+        marginBottom: 8,
+        background: "rgba(255,255,255,0.03)",
+        padding: "8px 10px",
+        borderRadius: 8,
+        flexWrap: "wrap",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            color: "#d4d4d8",
+            fontSize: 11,
+            fontWeight: 700,
+            padding: "2px 6px",
+            borderRadius: 4,
+            minWidth: 22,
+            textAlign: "center",
+          }}
+        >
+          {item.quantity}x
+        </span>
+        <span style={{ fontSize: 14, color: "#e4e4e7" }}>{item.item_name}</span>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <select
+          value={item.status}
+          onChange={(e) => onSetStatus(item.id, e.target.value)}
+          style={{
+            background: "#18181b",
+            color: "#d4d4d8",
+            border: "1px solid #3f3f46",
+            borderRadius: 7,
+            padding: "5px 8px",
+            fontSize: 12.5,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          {STATUS_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+
+        {buttonLabel && (
+          <button
+            onClick={() => onAdvance(item.id, item.status)}
+            style={{
+              background:
+                item.status === "pending"
+                  ? "#3b82f6"
+                  : item.status === "preparing"
+                    ? "#f59e0b"
+                    : "rgba(34,197,94,0.25)",
+              color:
+                item.status === "ready"
+                  ? "#86efac"
+                  : item.status === "preparing"
+                    ? "#1c1917"
+                    : "white",
+              border:
+                item.status === "ready"
+                  ? "1px solid rgba(34,197,94,0.4)"
+                  : "none",
+              borderRadius: 7,
+              padding: "5px 12px",
+              fontSize: 12.5,
+              fontWeight: 600,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            {item.status === "ready" && <Check size={13} />}
+            {buttonLabel}
+          </button>
+        )}
+
+        {item.status === "served" && (
+          <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>
+            <Check size={13} style={{ marginRight: 4 }} />
+            Served
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TicketCard({
+  order,
+  onAdvanceItem,
+  onSetItemStatus,
+}: {
+  order: Order;
+  onAdvanceItem: (orderItemId: string, currentStatus: string) => void;
+  onSetItemStatus: (orderItemId: string, newStatus: string) => void;
+}) {
+  return (
+    <div
+      style={{
+        background: "#18181b",
+        border: "1px solid #27272a",
         borderRadius: 10,
         marginBottom: 12,
         overflow: "hidden",
@@ -156,128 +219,28 @@ function TicketCard({
         }}
       >
         <div>
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: 19,
-              color: ticket.rush
-                ? "#fca5a5"
-                : isPreparing
-                  ? "#fdba74"
-                  : isReady
-                    ? "#86efac"
-                    : "#93c5fd",
-            }}
-          >
-            #{ticket.id}
+          <div style={{ fontWeight: 700, fontSize: 19, color: "#93c5fd" }}>
+            #{order.id.slice(0, 6)}
           </div>
           <div style={{ fontSize: 12.5, color: "#a1a1aa", marginTop: 2 }}>
-            {ticket.meta}
+            {getOrderMeta(order)}
           </div>
         </div>
-
-        {isPending && (
-          <button
-            onClick={() => onAdvance(ticket.id)}
-            style={{
-              background: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: 7,
-              padding: "7px 14px",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Start
-          </button>
-        )}
-
-        {isPreparing && (
-          <button
-            onClick={() => onAdvance(ticket.id)}
-            style={{
-              background: ticket.rush ? "#ef4444" : "#f59e0b",
-              color: ticket.rush ? "white" : "#1c1917",
-              border: "none",
-              borderRadius: 7,
-              padding: "7px 14px",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Ready
-          </button>
-        )}
-
-        {isReady && (
-          <button
-            onClick={() => onAdvance(ticket.id)}
-            style={{
-              background: "rgba(34,197,94,0.25)",
-              color: "#86efac",
-              border: "1px solid rgba(34,197,94,0.4)",
-              borderRadius: 7,
-              padding: "7px 14px",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
-            <Check size={14} /> Serve
-          </button>
-        )}
       </div>
 
       <div style={{ padding: "0 14px 14px 14px" }}>
-        {ticket.items.map((item, i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              marginBottom: 6,
-            }}
-          >
-            <span
-              style={{
-                background: "rgba(255,255,255,0.08)",
-                color: "#d4d4d8",
-                fontSize: 11,
-                fontWeight: 700,
-                padding: "2px 6px",
-                borderRadius: 4,
-                minWidth: 22,
-                textAlign: "center",
-              }}
-            >
-              {item.qty}
-            </span>
-            <span style={{ fontSize: 14, color: "#e4e4e7" }}>{item.name}</span>
-          </div>
-        ))}
-
-        {ticket.note && (
-          <div
-            style={{
-              background: "#dc2626",
-              color: "white",
-              fontSize: 12.5,
-              fontWeight: 600,
-              fontStyle: "italic",
-              padding: "6px 10px",
-              borderRadius: 6,
-              marginTop: 6,
-            }}
-          >
-            - {ticket.note}
-          </div>
+        {order.items.length === 0 ? (
+          <div style={{ fontSize: 12.5, color: "#71717a" }}>No items</div>
+        ) : (
+          order.items.map((item) => (
+            <ItemRow
+              key={item.id}
+              item={item}
+              order={order}
+              onAdvance={onAdvanceItem}
+              onSetStatus={onSetItemStatus}
+            />
+          ))
         )}
       </div>
     </div>
@@ -358,50 +321,125 @@ function ColumnHeader({
 }
 
 export default function WorkflowBoard() {
-  const [columns, setColumns] = useState(initialColumns);
-  const [served, setServed] = useState(servedTickets);
-  const order = ["pending", "preparing", "ready"];
+  const [orders, setOrders] = useState<Record<string, Order>>({});
+  const [served, setServed] = useState<ServedTicket[]>([]);
 
-  const advance = (ticketId: string) => {
-    setColumns((prev) => {
-      const next: Record<string, Column> = JSON.parse(JSON.stringify(prev));
-      let sourceCol: string | null = null;
-      let ticket: Ticket | null = null;
-
-      for (const colId of order) {
-        const idx = next[colId].tickets.findIndex((t) => t.id === ticketId);
-        if (idx !== -1) {
-          sourceCol = colId;
-          ticket = next[colId].tickets[idx];
-          next[colId].tickets.splice(idx, 1);
-          break;
-        }
+  useEffect(() => {
+    socket.on("order:new", (payload: any) => {
+      const order = normalizeOrderPayload(payload);
+      console.log("the fucking order is", order);
+      if (!order) {
+        console.warn("order:new unexpected payload shape:", payload);
+        return;
       }
-
-      if (!ticket || !sourceCol) return prev;
-
-      const nextIdx = order.indexOf(sourceCol) + 1;
-      if (nextIdx < order.length) {
-        next[order[nextIdx]].tickets.unshift(ticket);
-      } else {
-        setServed((current) => [
-          {
-            id: ticket.id,
-            meta: `${ticket.meta.split("•")[0].trim()} • Served just now`,
-            summary: ticket.items.map((item) => `${item.qty} ${item.name}`).join(", "),
-          },
-          ...current,
-        ]);
-      }
-
-      return next;
+      setOrders((prev) => ({ ...prev, [order.id]: order }));
     });
+
+    socket.on("order:update", (updatedItem: any) => {
+      if (!updatedItem || !updatedItem.order_id) {
+        console.warn("order:update unexpected payload:", updatedItem);
+        return;
+      }
+      setOrders((prev) => {
+        const next = { ...prev };
+        const existing = next[updatedItem.order_id];
+        if (!existing) return prev;
+
+        const updatedItems = existing.items.map((item) =>
+          item.id === updatedItem.id
+            ? { ...item, status: updatedItem.status }
+            : item,
+        );
+
+        next[updatedItem.order_id] = { ...existing, items: updatedItems };
+        return next;
+      });
+    });
+
+    socket.on("order:served", (updatedItem: any) => {
+      if (!updatedItem || !updatedItem.order_id) {
+        console.warn("order:served unexpected payload:", updatedItem);
+        return;
+      }
+      setOrders((prev) => {
+        const next = { ...prev };
+        const existing = next[updatedItem.order_id];
+        if (!existing) return prev;
+
+        const updatedItems = existing.items.map((item) =>
+          item.id === updatedItem.id ? { ...item, status: "served" } : item,
+        );
+
+        const allServed = updatedItems.every(
+          (item) => item.status === "served",
+        );
+
+        if (allServed) {
+          setServed((current) => [
+            {
+              id: existing.id,
+              meta: `${getOrderMeta(existing)} • Served just now`,
+              summary: updatedItems
+                .map((item) => `${item.quantity}x ${item.item_name}`)
+                .join(", "),
+            },
+            ...current,
+          ]);
+          delete next[updatedItem.order_id];
+          return next;
+        }
+
+        next[updatedItem.order_id] = { ...existing, items: updatedItems };
+        return next;
+      });
+    });
+
+    return () => {
+      socket.off("order:new");
+      socket.off("order:update");
+      socket.off("order:served");
+    };
+  }, []);
+
+  function advanceItem(orderItemId: string, currentStatus: string) {
+    const nextStatus = STATUS_FLOW[currentStatus];
+    setItemStatus(orderItemId, nextStatus);
+  }
+
+  function setItemStatus(orderItemId: string, newStatus: string) {
+    if (newStatus === "served") {
+      socket.emit("order:served", { order_item_id: orderItemId });
+    } else {
+      socket.emit("order:update", {
+        order_item_id: orderItemId,
+        status: newStatus,
+      });
+    }
+  }
+
+  function getOrderColumn(order: Order): "pending" | "preparing" | "ready" {
+    console.log("items are ", order);
+    const items = order.items ?? [];
+    if (items.length === 0) return "pending";
+    const statuses = items.map((i) => i.status);
+    if (statuses.some((s) => s === "pending")) return "pending";
+    if (statuses.some((s) => s === "preparing")) return "preparing";
+    return "ready";
+  }
+
+  const columnBuckets: Record<string, Order[]> = {
+    pending: [],
+    preparing: [],
+    ready: [],
   };
 
-  const totalActive = order.reduce(
-    (sum, id) => sum + columns[id].tickets.length,
-    0,
-  );
+  Object.values(orders).forEach((order) => {
+    const col = getOrderColumn(order);
+    columnBuckets[col].push(order);
+  });
+
+  const order_columns_priority = ["pending", "preparing", "ready"];
+  const totalActive = Object.values(orders).length;
 
   return (
     <div
@@ -447,8 +485,9 @@ export default function WorkflowBoard() {
           gap: 18,
         }}
       >
-        {order.map((colId) => {
-          const col = columns[colId];
+        {order_columns_priority.map((colId) => {
+          const meta = COLUMN_META[colId];
+          const colOrders = columnBuckets[colId];
 
           return (
             <div
@@ -462,17 +501,17 @@ export default function WorkflowBoard() {
               }}
             >
               <ColumnHeader
-                dotColor={col.dotColor}
-                title={col.title}
-                count={col.tickets.length}
+                dotColor={meta.dotColor}
+                title={meta.title}
+                count={colOrders.length}
               />
 
-              {col.tickets.map((ticket) => (
+              {colOrders.map((order) => (
                 <TicketCard
-                  key={ticket.id}
-                  ticket={ticket}
-                  columnId={colId}
-                  onAdvance={advance}
+                  key={order.id}
+                  order={order}
+                  onAdvanceItem={advanceItem}
+                  onSetItemStatus={setItemStatus}
                 />
               ))}
             </div>
@@ -546,9 +585,13 @@ export default function WorkflowBoard() {
                 >
                   <div>
                     <div
-                      style={{ fontWeight: 700, fontSize: 17, color: "#d4d4d8" }}
+                      style={{
+                        fontWeight: 700,
+                        fontSize: 17,
+                        color: "#d4d4d8",
+                      }}
                     >
-                      #{ticket.id}
+                      #{ticket.id.slice(0, 6)}
                     </div>
                     <div
                       style={{

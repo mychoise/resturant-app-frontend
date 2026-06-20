@@ -23,7 +23,8 @@ type WaiterStore = {
   deleteItem: (id: string) => void;
 };
 
-export const useWaiterStore = create<WaiterStore>((set, get) => ({
+export const useWaiterStore = create((set, get) => ({
+  user: null,
   table: null,
   cart: [],
   setTable: (table) => set({ table }),
@@ -61,5 +62,14 @@ export const useWaiterStore = create<WaiterStore>((set, get) => ({
     const cart = get().cart;
     const updatedCart = cart.filter((item) => item.id !== id);
     set({ cart: updatedCart });
+  },
+  setUser: (user) => {
+    const payload = {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+      email: user.email,
+    };
+    set({ user: payload });
   },
 }));
