@@ -4,6 +4,9 @@ import TablePage from "./pages/waiterPage/TablePage";
 import MenuPage from "./pages/waiterPage/MenuPage";
 import MenuAddedSucess from "./pages/waiterPage/MenuAddedSucess";
 import { socket } from "./lib/socket";
+import WorkflowBoard from "./pages/kitchenPage/kitchen";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const App = () => {
   useEffect(() => {
@@ -28,6 +31,10 @@ const App = () => {
         <Route path="/" element={<TablePage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/success" element={<MenuAddedSucess />} />
+        <Route path="/kitchen" element={<WorkflowBoard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </div>
   );
