@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Check, ChevronsRight } from "lucide-react";
 import { socket } from "../../lib/socket";
+import { axiosInstance } from "../../lib/axios";
 
 type OrderItem = {
   id: string;
@@ -325,6 +326,42 @@ export default function WorkflowBoard() {
   const [served, setServed] = useState<ServedTicket[]>([]);
 
   useEffect(() => {
+    async function loadInitialOrders() {
+      try {
+        const res = await axiosInstance.get("/order/all");
+        const data = res.data;
+        const initialOrders: Record<string, Order> = {};
+        const initialServed: ServedTicket[] = [];
+
+        (data.orders ?? []).forEach((raw: any) => {
+          const order = normalizeOrderPayload(raw);
+          if (!order) return;
+
+          const allServed = order.items.every((i) => i.status === "served");
+
+          if (allServed) {
+            initialServed.push({
+              id: order.id,
+              meta: `${getOrderMeta(order)} • Served`,
+              summary: order.items
+                .map((i) => `${i.quantity}x ${i.item_name}`)
+                .join(", "),
+            });
+          } else {
+            initialOrders[order.id] = order;
+          }
+        });
+
+        setOrders(initialOrders);
+        setServed(initialServed);
+      } catch (err) {
+        console.error("Failed to load initial orders:", err);
+      }
+    }
+
+    loadInitialOrders();
+  }, []);
+  useEffect(() => {
     socket.on("order:new", (payload: any) => {
       const order = normalizeOrderPayload(payload);
       console.log("the fucking order is", order);
@@ -433,10 +470,16 @@ export default function WorkflowBoard() {
     ready: [],
   };
 
-  Object.values(orders).forEach((order) => {
-    const col = getOrderColumn(order);
-    columnBuckets[col].push(order);
-  });
+  Object.values(orders)
+    .sort(
+      (a, b) =>
+        new Date(b.ordered_at ?? 0).getTime() -
+        new Date(a.ordered_at ?? 0).getTime(),
+    )
+    .forEach((order) => {
+      const col = getOrderColumn(order);
+      columnBuckets[col].push(order);
+    });
 
   const order_columns_priority = ["pending", "preparing", "ready"];
   const totalActive = Object.values(orders).length;
