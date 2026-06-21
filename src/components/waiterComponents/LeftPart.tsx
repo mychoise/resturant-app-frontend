@@ -1,14 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { sepratedColor } from "../../constants/constants";
+import { sepratedColor, table } from "../../constants/constants";
 import { useTable } from "../../hooks/auth.hook";
+import { socket } from "../../lib/socket";
+import { useWaiterStore } from "../../store/waiter.store";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LeftPart = ({ selectedTable, setSelectedTable }) => {
-  const { data } = useTable();
-  // useEffect(() => {
-  //   if (!data) {
-  //     alert("NO data received");
-  //   }
-  // }, [data]);
+  let { data } = useTable();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const handleNewOrder = (order) => {
+      console.log("New order received:", order);
+      console.log("order received for table:", order.table.table_number);
+      queryClient.setQueryData(["table"], (oldData) => {
+        console.log("oldData", oldData);
+        const updated = oldData?.map((table) =>
+          table.table_number === order.table.table_number
+            ? { ...table, is_occupied: true }
+            : table,
+        );
+        console.log("updated", updated);
+        return updated;
+      });
+    };
+
+    socket.on("order:new", handleNewOrder);
+
+    return () => {
+      socket.off("order:new", handleNewOrder);
+    };
+  }, [queryClient]);
   console.log(selectedTable);
   return (
     <div>
