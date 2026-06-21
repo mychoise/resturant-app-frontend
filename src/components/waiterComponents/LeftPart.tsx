@@ -1,7 +1,14 @@
-import React, { useState } from "react";
-import { sepratedColor, table } from "../../constants/constants";
+import React, { useEffect, useState } from "react";
+import { sepratedColor } from "../../constants/constants";
+import { useTable } from "../../hooks/auth.hook";
 
 const LeftPart = ({ selectedTable, setSelectedTable }) => {
+  const { data } = useTable();
+  // useEffect(() => {
+  //   if (!data) {
+  //     alert("NO data received");
+  //   }
+  // }, [data]);
   console.log(selectedTable);
   return (
     <div>
@@ -37,7 +44,7 @@ const LeftPart = ({ selectedTable, setSelectedTable }) => {
           </div>
 
           <div className="pl-20 pt-10 flex flex-wrap gap-25">
-            {table.map((item, index) => (
+            {data?.map((item, index) => (
               <div key={index}>
                 <button
                   disabled={item.is_occupied === true}

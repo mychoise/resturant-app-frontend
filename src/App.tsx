@@ -53,7 +53,7 @@ const App = () => {
           element={
             user && user?.role === "waiter" ? (
               <TablePage />
-            ) : user ? (
+            ) : user && user?.role === "kitchen" ? (
               <WorkflowBoard />
             ) : (
               <Login />
@@ -65,7 +65,7 @@ const App = () => {
           element={
             user && user?.role === "waiter" ? (
               <MenuPage />
-            ) : user ? (
+            ) : user && user?.role === "kitchen" ? (
               <WorkflowBoard />
             ) : (
               <Login />
@@ -77,7 +77,7 @@ const App = () => {
           element={
             user && user?.role === "waiter" ? (
               <MenuAddedSucess />
-            ) : user ? (
+            ) : user && user?.role === "kitchen" ? (
               <WorkflowBoard />
             ) : (
               <Login />
@@ -89,7 +89,7 @@ const App = () => {
           element={
             user && user?.role === "kitchen" ? (
               <WorkflowBoard />
-            ) : user ? (
+            ) : user && user?.role === "waiter" ? (
               <TablePage />
             ) : (
               <Login />
@@ -101,7 +101,7 @@ const App = () => {
           element={
             user && user?.role === "waiter" ? (
               <TablePage />
-            ) : user ? (
+            ) : user && user?.role === "kitchen" ? (
               <WorkflowBoard />
             ) : (
               <Login />

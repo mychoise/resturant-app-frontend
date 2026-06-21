@@ -70,6 +70,7 @@ export const useWaiterStore = create((set, get) => ({
       role: user.role,
       email: user.email,
     };
+    console.log("Setting user in store with payload:", payload);
     set({ user: payload });
   },
 }));

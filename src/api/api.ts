@@ -8,7 +8,7 @@ export const login = async (email: string, password: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login error:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -40,5 +40,17 @@ export const getUser = async () => {
   } catch (error) {
     console.error("Error fetching user:", error);
     throw error;
+  }
+};
+
+export const getTable = async () => {
+  try {
+    const result = axiosInstance.get("/table/all");
+    return result;
+  } catch (error) {
+    console.log(
+      "error in getting table",
+      error.response?.data || error.message,
+    );
   }
 };
