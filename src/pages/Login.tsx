@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Pencil } from "lucide-react";
 import { useLogin } from "../hooks/auth.hook";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");

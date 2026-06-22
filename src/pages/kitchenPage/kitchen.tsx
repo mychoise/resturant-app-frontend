@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Check, ChevronsRight } from "lucide-react";
 import { socket } from "../../lib/socket";
 import { axiosInstance } from "../../lib/axios";
+import toast from "react-hot-toast";
 
 type OrderItem = {
   id: string;
@@ -330,11 +331,13 @@ export default function WorkflowBoard() {
       try {
         const res = await axiosInstance.get("/order/all");
         const data = res.data;
+        console.log("data asgdgu", data);
         const initialOrders: Record<string, Order> = {};
         const initialServed: ServedTicket[] = [];
 
         (data.orders ?? []).forEach((raw: any) => {
           const order = normalizeOrderPayload(raw);
+          console.log("fuckingg order is", order);
           if (!order) return;
 
           const allServed = order.items.every((i) => i.status === "served");
@@ -370,6 +373,70 @@ export default function WorkflowBoard() {
         return;
       }
       setOrders((prev) => ({ ...prev, [order.id]: order }));
+    });
+
+    socket.on("order:alert", (payload: any) => {
+      toast.custom(
+        (t) => (
+          <div
+            className={`${t.visible ? "animate-enter" : "animate-leave"} w-[340px] rounded-[14px] overflow-hidden border border-[#2a2825] shadow-2xl`}
+            style={{ background: "#1c1917" }}
+          >
+            {/* Header bar */}
+            <div
+              className="flex items-center justify-between px-4 py-2.5"
+              style={{ background: "#78350f" }}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-[11px] font-semibold text-amber-300 uppercase tracking-widest">
+                  Kitchen Alert
+                </span>
+              </div>
+              <span className="text-[11px] font-[font2] text-amber-300 bg-[#92400e] px-2.5 py-0.5 rounded-full font-medium">
+                Table {payload.tableNumber}
+              </span>
+            </div>
+
+            {/* Body */}
+            <div className="flex gap-3 items-start px-4 py-3.5">
+              <div className="flex-shrink-0 w-10 h-10 rounded-[10px] bg-[#292524] border border-[#3a3532] flex items-center justify-center">
+                <span className="text-amber-400 text-lg">🍽</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-[font4] font-semibold text-white mb-1">
+                  Order pending
+                </p>
+                <p className="text-[13px] font-[font2] text-[#a8a29e] leading-snug">
+                  {payload.msg}
+                </p>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-[#2a2825] px-4 py-2.5 flex items-center justify-between">
+              <span className="text-[12px] text-[#57534e]">Just now</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="text-[12px] text-[#a8a29e] bg-[#292524] border border-[#3a3532] px-3 py-1 rounded-lg"
+                >
+                  Dismiss
+                </button>
+                {/*<button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="text-[12px] text-[#1c1917] bg-amber-400 px-3 py-1 rounded-lg font-semibold"
+                >
+                  Mark done
+                </button>*/}
+              </div>
+            </div>
+          </div>
+        ),
+        { duration: 6000, position: "top-right" },
+      );
+      console.log("payload is", payload);
+      // alert("hi");
     });
 
     socket.on("order:update", (updatedItem: any) => {

@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useWaiterStore } from "./store/waiter.store";
 import { useCheckAuth } from "./hooks/auth.hook";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   useEffect(() => {
@@ -46,72 +47,75 @@ const App = () => {
   }
 
   return (
-    <div className="bg-[#FCF9F5] w-full min-h-screen">
-      <Routes>
-        <Route
-          path="/"
-          element={
-            user && user?.role === "waiter" ? (
-              <TablePage />
-            ) : user && user?.role === "kitchen" ? (
-              <WorkflowBoard />
-            ) : (
-              <Login />
-            )
-          }
-        />
-        <Route
-          path="/menu"
-          element={
-            user && user?.role === "waiter" ? (
-              <MenuPage />
-            ) : user && user?.role === "kitchen" ? (
-              <WorkflowBoard />
-            ) : (
-              <Login />
-            )
-          }
-        />
-        <Route
-          path="/success"
-          element={
-            user && user?.role === "waiter" ? (
-              <MenuAddedSucess />
-            ) : user && user?.role === "kitchen" ? (
-              <WorkflowBoard />
-            ) : (
-              <Login />
-            )
-          }
-        />
-        <Route
-          path="/kitchen"
-          element={
-            user && user?.role === "kitchen" ? (
-              <WorkflowBoard />
-            ) : user && user?.role === "waiter" ? (
-              <TablePage />
-            ) : (
-              <Login />
-            )
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            user && user?.role === "waiter" ? (
-              <TablePage />
-            ) : user && user?.role === "kitchen" ? (
-              <WorkflowBoard />
-            ) : (
-              <Login />
-            )
-          }
-        />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="*" element={<div>404 Not Found</div>} />
-      </Routes>
-    </div>
+    <>
+      <Toaster />
+      <div className="bg-[#FCF9F5] w-full min-h-screen">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              user && user?.role === "waiter" ? (
+                <TablePage />
+              ) : user && user?.role === "kitchen" ? (
+                <WorkflowBoard />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route
+            path="/menu"
+            element={
+              user && user?.role === "waiter" ? (
+                <MenuPage />
+              ) : user && user?.role === "kitchen" ? (
+                <WorkflowBoard />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route
+            path="/success"
+            element={
+              user && user?.role === "waiter" ? (
+                <MenuAddedSucess />
+              ) : user && user?.role === "kitchen" ? (
+                <WorkflowBoard />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route
+            path="/kitchen"
+            element={
+              user && user?.role === "kitchen" ? (
+                <WorkflowBoard />
+              ) : user && user?.role === "waiter" ? (
+                <TablePage />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              user && user?.role === "waiter" ? (
+                <TablePage />
+              ) : user && user?.role === "kitchen" ? (
+                <WorkflowBoard />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </div>
+    </>
   );
 };
 
