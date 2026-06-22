@@ -14,7 +14,6 @@ const MenuAddedSucess = () => {
 
   useEffect(() => {
     if (!table || items.length === 0) {
-      // Redirect to floor plan if no table or items
       navigate("/");
     }
   }, [table, items, navigate]);
@@ -110,6 +109,7 @@ const MenuAddedSucess = () => {
             Print Receipt
           </button>
           <button
+            onClick={() => navigate("/")}
             className={`text-[16px] flex items-center justify-center gap-3 w-[85%] rounded-xl bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
           >
             <Grid2x2 />

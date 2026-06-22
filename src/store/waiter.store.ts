@@ -73,4 +73,5 @@ export const useWaiterStore = create((set, get) => ({
     console.log("Setting user in store with payload:", payload);
     set({ user: payload });
   },
+  removeCart: () => set({ cart: [] }),
 }));

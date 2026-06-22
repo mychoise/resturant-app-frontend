@@ -3,6 +3,8 @@ import { Check, ChevronsRight } from "lucide-react";
 import { socket } from "../../lib/socket";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
+import { Howl } from "howler";
+import { playOrderSound } from "../../lib/sound";
 
 type OrderItem = {
   id: string;
@@ -126,27 +128,6 @@ function ItemRow({
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <select
-          value={item.status}
-          onChange={(e) => onSetStatus(item.id, e.target.value)}
-          style={{
-            background: "#18181b",
-            color: "#d4d4d8",
-            border: "1px solid #3f3f46",
-            borderRadius: 7,
-            padding: "5px 8px",
-            fontSize: 12.5,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          {STATUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-
         {buttonLabel && (
           <button
             onClick={() => onAdvance(item.id, item.status)}
@@ -331,7 +312,7 @@ export default function WorkflowBoard() {
       try {
         const res = await axiosInstance.get("/order/all");
         const data = res.data;
-        console.log("data asgdgu", data);
+        console.log("data asgdgu", data.updatedItem);
         const initialOrders: Record<string, Order> = {};
         const initialServed: ServedTicket[] = [];
 
@@ -376,6 +357,8 @@ export default function WorkflowBoard() {
     });
 
     socket.on("order:alert", (payload: any) => {
+      playOrderSound();
+
       toast.custom(
         (t) => (
           <div
@@ -444,6 +427,7 @@ export default function WorkflowBoard() {
         console.warn("order:update unexpected payload:", updatedItem);
         return;
       }
+      console.log("updated item is", updatedItem);
       setOrders((prev) => {
         const next = { ...prev };
         const existing = next[updatedItem.order_id];
