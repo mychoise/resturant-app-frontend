@@ -69,7 +69,7 @@ const LeftPart = ({ selectedTable, setSelectedTable }) => {
             {data?.map((item, index) => (
               <div key={index}>
                 <button
-                  disabled={item.is_occupied === true}
+                  // disabled={item.is_occupied === true}
                   onClick={() => setSelectedTable(item)}
                   className={`w-21  ${item.is_occupied === true ? "bg-[#EBE9E5]  cursor-not-allowed" : selectedTable?.table_number === item.table_number ? "bg-[#FFE088] cursor-pointer" : "bg-[#FFFFFF] cursor-pointer"}  ${item.value === "vip" ? "w-40" : "w-21"} ${item.value === "vip" ? "font-[font4] text-2xl" : "font-[font2]"} h-21 rounded-xl  border-2 border-[#C8C7BF]  flex items-center justify-center   font-bold`}
                 >

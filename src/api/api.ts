@@ -54,3 +54,13 @@ export const getTable = async () => {
     );
   }
 };
+
+export const getAllOrderedItems = async (table_id: string) => {
+  try {
+    const result = await axiosInstance.get(`/order/all/${table_id}`);
+    return result;
+  } catch (error) {
+    console.error("Error fetching all ordered items:", error);
+    throw error;
+  }
+};

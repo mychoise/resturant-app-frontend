@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import { useWaiterStore } from "./store/waiter.store";
 import { useCheckAuth } from "./hooks/auth.hook";
 import { Toaster } from "react-hot-toast";
+import MenuAddInPrevious from "./pages/waiterPage/MenuAddInPrevious";
 
 const App = () => {
   useEffect(() => {
@@ -67,7 +68,7 @@ const App = () => {
             path="/menu"
             element={
               user && user?.role === "waiter" ? (
-                <MenuPage />
+                <MenuAddInPrevious />
               ) : user && user?.role === "kitchen" ? (
                 <WorkflowBoard />
               ) : (

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUser, login, getTable } from "../api/api";
+import { getUser, login, getTable, getAllOrderedItems } from "../api/api";
 import { useWaiterStore } from "../store/waiter.store";
 
 export const useLogin = () => {
@@ -43,6 +43,20 @@ export const useTable = () => {
     queryFn: async () => {
       const res = await getTable();
       console.log("response for table is", res?.data);
+      return res?.data;
+    },
+    retry: false,
+  });
+
+  return { isLoading, isError, data };
+};
+
+export const usePreviousOrders = (table_id: string) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["previous-orders", table_id],
+    queryFn: async () => {
+      const res = await getAllOrderedItems(table_id);
+      console.log("response for previous orders is", res?.data);
       return res?.data;
     },
     retry: false,
