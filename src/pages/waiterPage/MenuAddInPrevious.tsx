@@ -82,6 +82,7 @@ const MenuAddInPrevious = () => {
       const payload = {
         table_id: table.id,
         // payment_method: "cash",
+        order_id: result?.order?.id || null,
         items: cartItems.map((item) => ({
           menu_item_id: item.id,
           item_name: item.name,
@@ -93,7 +94,7 @@ const MenuAddInPrevious = () => {
         socket
           .timeout(9000)
           .emit(
-            "order:new",
+            "order:addInPrevious",
             payload,
             (err: Error | null, response: unknown) => {
               if (err) {
