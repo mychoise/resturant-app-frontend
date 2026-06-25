@@ -56,11 +56,12 @@ function getOrderMeta(order: Order) {
 function normalizeOrderPayload(payload: any): Order | null {
   const raw = payload?.order ?? payload;
   if (!raw || !raw.id) return null;
+  const table = payload?.table;
 
   return {
     id: raw.id,
     table_id: raw.table_id,
-    table_number: raw.table_number,
+    table_number: raw.table_number || table.table_number,
     status: raw.status ?? "pending",
     ordered_at: raw.ordered_at,
     items: Array.isArray(raw.items)
@@ -356,6 +357,23 @@ export default function WorkflowBoard() {
       setOrders((prev) => ({ ...prev, [order.id]: order }));
     });
 
+    socket.on("order:addInPrevious", (payload: any) => {
+      console.log("payload you have received is kindly writtn as ", payload);
+      const order = normalizeOrderPayload(payload);
+      console.log("the fucking fweiufgffgsfjhsfyuv order is", order);
+      if (!order) {
+        console.warn("order:new unexpected payload shape:", payload);
+        return;
+      }
+      setOrders((prev) => ({
+        ...prev,
+        [order.id]: {
+          ...prev[order.id], // keep existing order data
+          items: [...(prev[order.id]?.items || []), ...order.items], // merge items
+        },
+      }));
+    });
+
     socket.on("order:alert", (payload: any) => {
       playOrderSound();
 
@@ -486,6 +504,7 @@ export default function WorkflowBoard() {
       socket.off("order:new");
       socket.off("order:update");
       socket.off("order:served");
+      socket.off("order:addInPrevious");
     };
   }, []);
 
