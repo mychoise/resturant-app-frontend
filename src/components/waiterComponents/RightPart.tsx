@@ -30,7 +30,11 @@ const RightPart = ({ selectedTable }: { selectedTable: string | null }) => {
           <hr className="border-[#C8C7BF] mt-5" />
           <button
             disabled={!selectedTable}
-            onClick={() => navigate("/menu")}
+            onClick={() =>
+              selectedTable?.is_occupied
+                ? navigate("/menuaddprev")
+                : navigate("/menu")
+            }
             className={`text-[14px] w-full ${selectedTable ? "bg-black cursor-pointer" : "bg-[#C9C6C2] cursor-not-allowed"}   text-white font-bold mt-5 rounded-xl  pt-3 pb-3 uppercase font-[font2] tracking-wide text-center border border-[#C8C7BF]`}
           >
             Proceed to menu

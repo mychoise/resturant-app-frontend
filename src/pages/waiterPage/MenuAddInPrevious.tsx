@@ -257,7 +257,10 @@ const MenuAddInPrevious = () => {
               </div>
               <div className="mt-3">
                 {result?.orderedItem?.map((item, index) => (
-                  <div className="flex justify-between font-[font2]">
+                  <div
+                    key={index}
+                    className="flex justify-between font-[font2]"
+                  >
                     <div className="flex gap-1">
                       <h1>{item.item_name}</h1>
                       <X className="mt-1" size={16} />

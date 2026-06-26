@@ -29,7 +29,7 @@ const App = () => {
     };
   }, []);
 
-  const { user, setUser } = useWaiterStore();
+  const { user, setUser, table } = useWaiterStore();
   const { isLoading, data } = useCheckAuth();
 
   useEffect(() => {
@@ -38,6 +38,8 @@ const App = () => {
       setUser(data);
     }
   }, [data]);
+
+  console.log("Table data from store:", table);
 
   if (isLoading) {
     return (
@@ -66,6 +68,18 @@ const App = () => {
           />
           <Route
             path="/menu"
+            element={
+              user && user?.role === "waiter" ? (
+                <MenuPage />
+              ) : user && user?.role === "kitchen" ? (
+                <WorkflowBoard />
+              ) : (
+                <Login />
+              )
+            }
+          />
+          <Route
+            path="/menuaddprev"
             element={
               user && user?.role === "waiter" ? (
                 <MenuAddInPrevious />
