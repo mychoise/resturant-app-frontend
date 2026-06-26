@@ -50,10 +50,12 @@ const COLUMN_META: Record<string, { title: string; dotColor: string }> = {
 };
 
 function getOrderMeta(order: Order) {
+  console.log("order i received is", order);
   return `Table ${order.table_number ?? order.table_id}`;
 }
 
 function normalizeOrderPayload(payload: any): Order | null {
+  console.log("order normalized payload receivd is", payload);
   const raw = payload?.order ?? payload;
   if (!raw || !raw.id) return null;
   const table = payload?.table;
@@ -204,9 +206,10 @@ function TicketCard({
       >
         <div>
           <div style={{ fontWeight: 700, fontSize: 19, color: "#93c5fd" }}>
-            #{order.id.slice(0, 6)}
+            {order.items[0].order_id}
           </div>
           <div style={{ fontSize: 12.5, color: "#a1a1aa", marginTop: 2 }}>
+            {console.log("order meta is", order)}
             {getOrderMeta(order)}
           </div>
         </div>
@@ -312,6 +315,7 @@ export default function WorkflowBoard() {
     async function loadInitialOrders() {
       try {
         const res = await axiosInstance.get("/order/all");
+        console.log("res is", res.data);
         const data = res.data;
         console.log("data asgdgu", data.updatedItem);
         const initialOrders: Record<string, Order> = {};
@@ -358,20 +362,21 @@ export default function WorkflowBoard() {
     });
 
     socket.on("order:addInPrevious", (payload: any) => {
-      console.log("payload you have received is kindly writtn as ", payload);
       const order = normalizeOrderPayload(payload);
-      console.log("the fucking fweiufgffgsfjhsfyuv order is", order);
-      if (!order) {
-        console.warn("order:new unexpected payload shape:", payload);
-        return;
-      }
-      setOrders((prev) => ({
-        ...prev,
-        [order.id]: {
-          ...prev[order.id], // keep existing order data
-          items: [...(prev[order.id]?.items || []), ...order.items], // merge items
-        },
-      }));
+      if (!order) return;
+
+      setOrders((prev) => {
+        const existingOrder = prev[order.id];
+
+        return {
+          ...prev,
+          [order.id]: {
+            ...existingOrder, // Keep ALL existing properties
+            ...order, // Merge in new data
+            items: [...(existingOrder?.items || []), ...order.items], // Merge items
+          },
+        };
+      });
     });
 
     socket.on("order:alert", (payload: any) => {
@@ -491,7 +496,7 @@ export default function WorkflowBoard() {
             },
             ...current,
           ]);
-          delete next[updatedItem.order_id];
+          delete next[updatedItem.order_id]; // ← ADD THIS LINE
           return next;
         }
 
@@ -524,20 +529,24 @@ export default function WorkflowBoard() {
     }
   }
 
-  function getOrderColumn(order: Order): "pending" | "preparing" | "ready" {
+  function getOrderColumn(
+    order: Order,
+  ): "pending" | "preparing" | "ready" | "served" {
     console.log("items are ", order);
     const items = order.items ?? [];
     if (items.length === 0) return "pending";
     const statuses = items.map((i) => i.status);
     if (statuses.some((s) => s === "pending")) return "pending";
     if (statuses.some((s) => s === "preparing")) return "preparing";
-    return "ready";
+    if (statuses.some((s) => s === "ready")) return "ready";
+    return "served";
   }
 
   const columnBuckets: Record<string, Order[]> = {
     pending: [],
     preparing: [],
     ready: [],
+    served: [],
   };
 
   Object.values(orders)
@@ -547,7 +556,9 @@ export default function WorkflowBoard() {
         new Date(a.ordered_at ?? 0).getTime(),
     )
     .forEach((order) => {
+      console.log("machikni order is", order);
       const col = getOrderColumn(order);
+      console.log("order is", order, "col is", col);
       columnBuckets[col].push(order);
     });
 
@@ -600,7 +611,9 @@ export default function WorkflowBoard() {
       >
         {order_columns_priority.map((colId) => {
           const meta = COLUMN_META[colId];
+          console.log("yo meta cai", meta);
           const colOrders = columnBuckets[colId];
+          console.log("yo colOrders is", colOrders);
 
           return (
             <div
@@ -619,14 +632,19 @@ export default function WorkflowBoard() {
                 count={colOrders.length}
               />
 
-              {colOrders.map((order) => (
-                <TicketCard
-                  key={order.id}
-                  order={order}
-                  onAdvanceItem={advanceItem}
-                  onSetItemStatus={setItemStatus}
-                />
-              ))}
+              {colOrders.map(
+                (order) => (
+                  console.log("order is", order),
+                  (
+                    <TicketCard
+                      key={order.id}
+                      order={order}
+                      onAdvanceItem={advanceItem}
+                      onSetItemStatus={setItemStatus}
+                    />
+                  )
+                ),
+              )}
             </div>
           );
         })}
