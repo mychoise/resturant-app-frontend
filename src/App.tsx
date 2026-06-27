@@ -11,6 +11,7 @@ import { useWaiterStore } from "./store/waiter.store";
 import { useCheckAuth } from "./hooks/auth.hook";
 import { Toaster } from "react-hot-toast";
 import MenuAddInPrevious from "./pages/waiterPage/MenuAddInPrevious";
+import Checkout from "./pages/Checkout";
 
 const App = () => {
   useEffect(() => {
@@ -114,6 +115,8 @@ const App = () => {
               )
             }
           />
+
+          <Route path="/checkout" element={<Checkout />} />
           <Route
             path="/login"
             element={
