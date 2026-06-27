@@ -1,5 +1,5 @@
 import Header from "../../components/waiterComponents/header";
-import { Cross, Minus, Plus, Search, X } from "lucide-react";
+import { CreditCard, Minus, Plus, Search, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { menuCategory, menuItems } from "../../constants/constants";
 import { useWaiterStore } from "../../store/waiter.store";
@@ -369,12 +369,19 @@ const MenuAddInPrevious = () => {
               ))}
             </div>
           </div>
-          <div className="w-full h-40  flex items-center justify-center">
+          <div className="w-full h-40  flex items-center justify-between flex-col">
             <button
               onClick={() => sendToKitchen()}
               className={`text-[16px] w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
             >
               Send to kitchen
+            </button>{" "}
+            <button
+              onClick={() => navigate("/checkout")}
+              className={`text-[16px] flex items-center justify-center gap-6 w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
+            >
+              <CreditCard />
+              Checkout
             </button>
           </div>
         </div>

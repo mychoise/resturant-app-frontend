@@ -1,13 +1,22 @@
 import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { usePreviousOrders } from "../hooks/auth.hook";
+import { useWaiterStore } from "../store/waiter.store";
 
 const Checkout = () => {
   const [show, setshow] = useState(false);
+
+  const { table } = useWaiterStore();
+  const { data, isLoading, isError } = usePreviousOrders(table?.id || "");
+  console.log("data is", data);
+  console.log("table is", table);
+
   return (
     <div className="bg-[#FDF9F0] overflow-x-hidden h-screen w-screen pt-10">
-      <div className="text-[#735C00] pl-8 font-[font5] text-[48px]">
+      <Link to={"/"} className="text-[#735C00] pl-8 font-[font5] text-[48px]">
         THE BANQUET PALACE
-      </div>
+      </Link>
 
       <div className=" flex   mb-4 justify-center pt-10 items-center flex-col ">
         <div
@@ -26,13 +35,16 @@ const Checkout = () => {
         className={`w-screen -pl-20 flex ${show ? "opacity-100" : "hidden opacity-0"} transition-all duration-1000 items-center justify-center`}
       >
         <div className=" border-t  border-[#735C00] pt-7 w-120">
-          <div className="flex justify-between mb-3">
-            <div className="flex font-serif gap-4 text-lg">
-              <h1 className="text-[#797877]">I.</h1>
-              <h1>Imperial Table Reservation</h1>
+          {data?.orderedItem?.map((item, index) => (
+            <div key={index} className="flex justify-between mb-3">
+              <div className="flex font-serif gap-4 text-lg">
+                <h1 className="text-[#797877]">{index + 1}.</h1>
+                <h1>{item.item_name}</h1>
+              </div>
+              <h1 className="font-[font5] text-lg">{item.price_snapshot}</h1>
             </div>
-            <h1 className="font-[font5] text-lg">200</h1>
-          </div>
+          ))}
+
           {/*/* Add more items here as needed */}
 
           <div>
@@ -40,21 +52,21 @@ const Checkout = () => {
               <div className="flex justify-between font-serif text-lg pt-2">
                 <h1 className="text-[#5F5E5E]">Subtotal</h1>
                 <h1 className="text-[#5F5E5E] font-[font2] text-[12px]">
-                  2000
+                  {data?.order?.total_price}
                 </h1>
               </div>
               <div className="flex justify-between font-serif text-lg ">
                 <h1 className="text-[#5F5E5E]">Service Charge (10%)</h1>
-                <h1 className="text-[#5F5E5E] font-[font2] text-[12px]">800</h1>
+                <h1 className="text-[#5F5E5E] font-[font2] text-[12px]">0</h1>
               </div>
               <div className="flex justify-between font-serif text-lg">
                 <h1 className="text-[#5F5E5E]">VAT (13%)</h1>
-                <h1 className="text-[#5F5E5E] font-[font2] text-[12px]">800</h1>
+                <h1 className="text-[#5F5E5E] font-[font2] text-[12px]">0</h1>
               </div>
             </div>
             <div className="flex justify-between font-[font5] text-[#735C00] mt-1 pt-4 border-t border-[#D0C5AF]">
               <h1 className="text-xl">Summation</h1>
-              <h1 className="text-4xl">9870</h1>
+              <h1 className="text-4xl">{data?.order?.total_price}</h1>
             </div>
           </div>
         </div>
@@ -64,7 +76,9 @@ const Checkout = () => {
         <h1 className="uppercase font-[font2] font-semibold text-[14px] [word-spacing:0.5em] [letter-spacing:0.5em] text-[#5F5E5E]">
           GRand Total
         </h1>
-        <h1 className="text-[300px] -mt-15 font-[font5]">9870</h1>
+        <h1 className="text-[300px] -mt-15 font-[font5]">
+          ${data?.order.total_price}
+        </h1>
         <h1 className="italic text-[#735C00] text-[14px] -mt-20 font-[font5] tracking-tight">
           {" "}
           THE BANQUET PALACE
