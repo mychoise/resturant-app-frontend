@@ -3,9 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { usePreviousOrders } from "../hooks/auth.hook";
 import { useWaiterStore } from "../store/waiter.store";
+import PayinCash from "./waiterPage/PayinCash";
 
 const Checkout = () => {
   const [show, setshow] = useState(false);
+
+  const [showcashsuccess, setshowcashsuccess] = useState(false);
 
   const { table } = useWaiterStore();
   const { data, isLoading, isError } = usePreviousOrders(table?.id || "");
@@ -22,6 +25,10 @@ const Checkout = () => {
 
   return (
     <div className="bg-[#FDF9F0] overflow-x-hidden h-screen w-screen pt-10">
+      <PayinCash
+        showcashsuccess={showcashsuccess}
+        setshowcashsuccess={setshowcashsuccess}
+      />
       <Link to={"/"} className="text-[#735C00] pl-8 font-[font5] text-[48px]">
         THE BANQUET PALACE
       </Link>
@@ -35,7 +42,7 @@ const Checkout = () => {
             View Particulars
           </h1>
           <ChevronDown
-            className={` transition-all duration-500 ${show ? "rotate-180" : "rotate-0"}`}
+            className={` z-0 transition-all duration-500 ${show ? "rotate-180" : "rotate-0"}`}
           />
         </div>
       </div>
@@ -98,14 +105,17 @@ const Checkout = () => {
           <div className="w-full max-w-2xl bg-[#FDF9F0] rounded-lg  overflow-hidden">
             <div className="flex">
               {/* Left Method */}
-              <div className="flex-1 cursor-pointer  px-8 py-12 flex flex-col justify-center items-start border-r border-gray-200">
+              <button
+                onClick={() => setshowcashsuccess(true)}
+                className="flex-1 cursor-pointer  px-8 py-12 flex flex-col justify-center items-start border-r border-gray-200"
+              >
                 <p className="text-xs font-semibold tracking-wider text-gray-600 mb-4">
                   METHOD 01
                 </p>
                 <h2 className="text-4xl font-serif text-gray-900">
                   Pay in Cash
                 </h2>
-              </div>
+              </button>
 
               {/* Right Method */}
               <div className="flex-1 cursor-pointer px-8 py-12 flex flex-col justify-center items-start">
