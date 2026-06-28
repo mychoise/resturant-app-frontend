@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { usePreviousOrders } from "../hooks/auth.hook";
 import { useWaiterStore } from "../store/waiter.store";
 
@@ -9,8 +9,16 @@ const Checkout = () => {
 
   const { table } = useWaiterStore();
   const { data, isLoading, isError } = usePreviousOrders(table?.id || "");
+  const navigate = useNavigate();
   console.log("data is", data);
   console.log("table is", table);
+
+  useEffect(() => {
+    if (!table || !data) {
+      console.log("No table or data found, redirecting to home.");
+      navigate("/");
+    }
+  }, [navigate, table, data]);
 
   return (
     <div className="bg-[#FDF9F0] overflow-x-hidden h-screen w-screen pt-10">
