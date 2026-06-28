@@ -64,3 +64,20 @@ export const getAllOrderedItems = async (table_id: string) => {
     throw error;
   }
 };
+
+export const createPayment = async (
+  order_id: string,
+  table_id: string,
+  payment_type: "cash" | "online",
+) => {
+  try {
+    const result = await axiosInstance.post("/payment/pay", {
+      order_id,
+      table_id,
+      payment_type,
+    });
+    return result.data;
+  } catch (error) {
+    console.error("Error creating payment:", error);
+  }
+};

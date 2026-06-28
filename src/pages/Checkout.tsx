@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { usePreviousOrders } from "../hooks/auth.hook";
+import { usePay, usePreviousOrders } from "../hooks/auth.hook";
 import { useWaiterStore } from "../store/waiter.store";
 import PayinCash from "./waiterPage/PayinCash";
 
@@ -22,6 +22,30 @@ const Checkout = () => {
       navigate("/");
     }
   }, [navigate, table, data]);
+
+  const { mutate } = usePay();
+
+  const payInCash = () => {
+    const payload: {
+      order_id: string;
+      table_id: string;
+      payment_type: "cash" | "online";
+    } = {
+      order_id: data?.order?.id,
+      table_id: table?.id,
+      payment_type: "cash",
+    };
+    mutate(payload, {
+      onSuccess: (response) => {
+        console.log("Payment successful:", response);
+        setshowcashsuccess(true);
+      },
+      onError: (error) => {
+        console.error("Payment failed:", error);
+        setshowcashsuccess(false);
+      },
+    });
+  };
 
   return (
     <div className="bg-[#FDF9F0] overflow-x-hidden h-screen w-screen pt-10">
@@ -106,7 +130,7 @@ const Checkout = () => {
             <div className="flex">
               {/* Left Method */}
               <button
-                onClick={() => setshowcashsuccess(true)}
+                onClick={() => payInCash()}
                 className="flex-1 cursor-pointer  px-8 py-12 flex flex-col justify-center items-start border-r border-gray-200"
               >
                 <p className="text-xs font-semibold tracking-wider text-gray-600 mb-4">

@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUser, login, getTable, getAllOrderedItems } from "../api/api";
+import {
+  getUser,
+  login,
+  getTable,
+  getAllOrderedItems,
+  createPayment,
+} from "../api/api";
 import { useWaiterStore } from "../store/waiter.store";
 
 export const useLogin = () => {
@@ -63,4 +69,20 @@ export const usePreviousOrders = (table_id: string) => {
   });
 
   return { isLoading, isError, data };
+};
+
+export const usePay = () => {
+  return useMutation({
+    mutationFn: (data: {
+      order_id: string;
+      table_id: string;
+      payment_type: "cash" | "online";
+    }) => createPayment(data.order_id, data.table_id, data.payment_type),
+    onSuccess: (data) => {
+      console.log("Payment successful:", data);
+    },
+    onError: (error) => {
+      console.error("Payment failed:", error);
+    },
+  });
 };

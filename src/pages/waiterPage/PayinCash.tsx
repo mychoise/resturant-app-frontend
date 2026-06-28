@@ -1,7 +1,9 @@
 import { LeafyGreen, Smile } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PayinCash = ({ showcashsuccess, setshowcashsuccess }) => {
+  const navigate = useNavigate();
   return (
     <div
       className={`bg-[ #f7faf700] z-50 ${showcashsuccess === true ? "" : "hidden"} backdrop-blur-2xl absolute flex items-center justify-center w-screen h-screen top-0`}
@@ -14,7 +16,10 @@ const PayinCash = ({ showcashsuccess, setshowcashsuccess }) => {
           processing at the concierge desk.
         </h1>
         <button
-          onClick={() => setshowcashsuccess(false)}
+          onClick={() => {
+            setshowcashsuccess(false);
+            navigate("/");
+          }}
           className="font-[font2] w-[80%] uppercase cursor-pointer mt-1 rounded-full text-[#F5F6F5] gap-5  h-[14%] flex items-center justify-center  bg-[#4E6050]"
         >
           <Smile />
