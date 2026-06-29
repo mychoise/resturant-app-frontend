@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { axiosInstance } from "../lib/axios";
 
 export const login = async (email: string, password: string) => {
@@ -9,10 +10,9 @@ export const login = async (email: string, password: string) => {
     return response.data;
   } catch (error) {
     console.error("Login error:", error.response?.data || error.message);
-    throw error;
+    throw error; // ← Add this
   }
 };
-
 export const register = async (
   name: string,
   email: string,
@@ -52,6 +52,8 @@ export const getTable = async () => {
       "error in getting table",
       error.response?.data || error.message,
     );
+    toast.error("Error fetching table data. Please try again.");
+    throw error;
   }
 };
 
@@ -61,6 +63,7 @@ export const getAllOrderedItems = async (table_id: string) => {
     return result;
   } catch (error) {
     console.error("Error fetching all ordered items:", error);
+    toast.error("Error fetching all ordered items. Please try again.");
     throw error;
   }
 };
@@ -79,5 +82,6 @@ export const createPayment = async (
     return result.data;
   } catch (error) {
     console.error("Error creating payment:", error);
+    toast.error("Error creating payment. Please try again.");
   }
 };

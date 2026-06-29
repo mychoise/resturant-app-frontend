@@ -7,6 +7,7 @@ import {
   createPayment,
 } from "../api/api";
 import { useWaiterStore } from "../store/waiter.store";
+import { toast } from "sonner";
 
 export const useLogin = () => {
   const { user, setUser } = useWaiterStore();
@@ -15,13 +16,20 @@ export const useLogin = () => {
     mutationFn: (data: { email: string; password: string }) =>
       login(data.email, data.password),
     onSuccess: (data) => {
-      console.log("Login successful:", data);
-      setUser(data.user);
-      queryClient.setQueryData(["user"], data.user);
-      console.log("User set in store:", user);
+      console.log("🔴 onSuccess called with:", data); // ← Add this
+
+      setUser(data?.user);
+      queryClient.setQueryData(["user"], data?.user);
     },
     onError: (error) => {
-      console.error("Login failed:", error);
+      const errorMessage =
+        typeof error.response?.data?.message === "string"
+          ? error.response.data.message
+          : error.response?.data?.message?.[0] // If it's an array
+            ? error.response.data.message[0]
+            : error.message || "Login failed. Please try again.";
+
+      toast.error(errorMessage);
     },
   });
 };

@@ -9,9 +9,10 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useWaiterStore } from "./store/waiter.store";
 import { useCheckAuth } from "./hooks/auth.hook";
-import { Toaster } from "react-hot-toast";
+import { Toaster } from "sonner";
 import MenuAddInPrevious from "./pages/waiterPage/MenuAddInPrevious";
 import Checkout from "./pages/Checkout";
+import PayinEsewa from "./pages/waiterPage/PayinEsewa";
 
 const App = () => {
   useEffect(() => {
@@ -52,7 +53,7 @@ const App = () => {
 
   return (
     <>
-      <Toaster />
+      <Toaster position="top-center" />
       <div className="bg-[#FCF9F5] w-full min-h-screen">
         <Routes>
           <Route
@@ -67,6 +68,7 @@ const App = () => {
               )
             }
           />
+          <Route path="/esewa" element={<PayinEsewa />} />
           <Route
             path="/menu"
             element={

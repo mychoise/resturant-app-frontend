@@ -4,12 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePay, usePreviousOrders } from "../hooks/auth.hook";
 import { useWaiterStore } from "../store/waiter.store";
 import PayinCash from "./waiterPage/PayinCash";
+import PayinEsewa from "./waiterPage/PayinEsewa";
 
 const Checkout = () => {
   const [show, setshow] = useState(false);
 
   const [showcashsuccess, setshowcashsuccess] = useState(false);
-
+  const [showEsewasuccess, setshowEsewasuccess] = useState(false);
   const { table } = useWaiterStore();
   const { data, isLoading, isError } = usePreviousOrders(table?.id || "");
   const navigate = useNavigate();
@@ -47,11 +48,37 @@ const Checkout = () => {
     });
   };
 
+  const payInEsewa = () => {
+    const payload: {
+      order_id: string;
+      table_id: string;
+      payment_type: "cash" | "online";
+    } = {
+      order_id: data?.order?.id,
+      table_id: table?.id,
+      payment_type: "online",
+    };
+    mutate(payload, {
+      onSuccess: (response) => {
+        console.log("Payment successful:", response);
+        setshowEsewasuccess(true);
+      },
+      onError: (error) => {
+        console.error("Payment failed:", error);
+        setshowEsewasuccess(false);
+      },
+    });
+  };
+
   return (
     <div className="bg-[#FDF9F0] overflow-x-hidden h-screen w-screen pt-10">
       <PayinCash
         showcashsuccess={showcashsuccess}
         setshowcashsuccess={setshowcashsuccess}
+      />
+      <PayinEsewa
+        showEsewasuccess={showEsewasuccess}
+        setshowEsewasuccess={setshowEsewasuccess}
       />
       <Link to={"/"} className="text-[#735C00] pl-8 font-[font5] text-[48px]">
         THE BANQUET PALACE
@@ -142,14 +169,17 @@ const Checkout = () => {
               </button>
 
               {/* Right Method */}
-              <div className="flex-1 cursor-pointer px-8 py-12 flex flex-col justify-center items-start">
+              <button
+                onClick={() => payInEsewa()}
+                className="flex-1 cursor-pointer px-8 py-12 flex flex-col justify-center items-start"
+              >
                 <p className="text-xs font-semibold tracking-wider text-gray-600 mb-4">
                   METHOD 02
                 </p>
                 <h2 className="text-4xl font-serif text-gray-900">
                   Digital Transfer
                 </h2>
-              </div>
+              </button>
             </div>
           </div>
         </div>
