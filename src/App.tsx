@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useWaiterStore } from "./store/waiter.store";
 import { useCheckAuth } from "./hooks/auth.hook";
-import { Toaster } from "sonner";
+import { Toaster } from "react-hot-toast";
 import MenuAddInPrevious from "./pages/waiterPage/MenuAddInPrevious";
 import Checkout from "./pages/Checkout";
 import PayinEsewa from "./pages/waiterPage/PayinEsewa";

@@ -1,5 +1,5 @@
 import Header from "../../components/waiterComponents/header";
-import { CreditCard, Minus, Plus, Search, X } from "lucide-react";
+import { Check, CreditCard, Minus, Plus, Search, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { menuCategory, menuItems } from "../../constants/constants";
 import { useWaiterStore } from "../../store/waiter.store";
@@ -259,14 +259,19 @@ const MenuAddInPrevious = () => {
                 {result?.orderedItem?.map((item, index) => (
                   <div
                     key={index}
-                    className="flex justify-between font-[font2]"
+                    className="flex mt-2 border-t  border-[#D9D9D9] justify-between font-[font2]"
                   >
                     <div className="flex gap-1">
                       <h1>{item.item_name}</h1>
                       <X className="mt-1" size={16} />
                       <span className="text-[#c30000]">{item.quantity}</span>
                     </div>
-                    <h1>${item.price_snapshot}</h1>
+                    <div className="flex flex-col items-end gap-2">
+                      <h1>${item.price_snapshot}</h1>
+                      <button className="border text-[#C8DCC9] font-[font2] bg-[#518D55] cursor-pointer pl-3 pr-3 p-1 rounded-xl">
+                        Mark Served
+                      </button>
+                    </div>
                   </div>
                 ))}
 

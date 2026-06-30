@@ -111,8 +111,6 @@ const Checkout = () => {
             </div>
           ))}
 
-          {/*/* Add more items here as needed */}
-
           <div>
             <div className="border-t flex flex-col  border-[#D0C5AF] border-dotted">
               <div className="flex justify-between font-serif text-lg pt-2">

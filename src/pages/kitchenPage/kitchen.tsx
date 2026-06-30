@@ -99,67 +99,25 @@ function ItemRow({
           : null;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 8,
-        marginBottom: 8,
-        background: "rgba(255,255,255,0.03)",
-        padding: "8px 10px",
-        borderRadius: 8,
-        flexWrap: "wrap",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span
-          style={{
-            background: "rgba(255,255,255,0.08)",
-            color: "#d4d4d8",
-            fontSize: 11,
-            fontWeight: 700,
-            padding: "2px 6px",
-            borderRadius: 4,
-            minWidth: 22,
-            textAlign: "center",
-          }}
-        >
+    <div className="flex items-center justify-between gap-2 mb-2 bg-white/[0.03] p-[10px] rounded-lg flex-wrap">
+      <div className="flex items-center gap-2">
+        <span className="bg-white/[0.08] text-[#d4d4d8] text-[11px] font-bold py-0.5 px-1.5 rounded w-[22px] text-center">
           {item.quantity}x
         </span>
-        <span style={{ fontSize: 14, color: "#e4e4e7" }}>{item.item_name}</span>
+        <span className="text-sm text-[#e4e4e7]">{item.item_name}</span>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div className="flex items-center gap-2">
         {buttonLabel && (
           <button
             onClick={() => onAdvance(item.id, item.status)}
-            style={{
-              background:
-                item.status === "pending"
-                  ? "#3b82f6"
-                  : item.status === "preparing"
-                    ? "#f59e0b"
-                    : "rgba(34,197,94,0.25)",
-              color:
-                item.status === "ready"
-                  ? "#86efac"
-                  : item.status === "preparing"
-                    ? "#1c1917"
-                    : "white",
-              border:
-                item.status === "ready"
-                  ? "1px solid rgba(34,197,94,0.4)"
-                  : "none",
-              borderRadius: 7,
-              padding: "5px 12px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-            }}
+            className={`rounded-[7px] px-3 py-1.5 text-[12.5px] font-semibold cursor-pointer flex items-center gap-1 ${
+              item.status === "pending"
+                ? "bg-blue-500 text-white"
+                : item.status === "preparing"
+                  ? "bg-amber-500 text-black"
+                  : "bg-green-500/25 text-[#86efac] border border-green-500/40"
+            }`}
           >
             {item.status === "ready" && <Check size={13} />}
             {buttonLabel}
@@ -167,8 +125,8 @@ function ItemRow({
         )}
 
         {item.status === "served" && (
-          <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>
-            <Check size={13} style={{ marginRight: 4 }} />
+          <span className="text-xs text-[#4ade80] font-semibold flex items-center gap-1">
+            <Check size={13} />
             Served
           </span>
         )}
@@ -187,37 +145,22 @@ function TicketCard({
   onSetItemStatus: (orderItemId: string, newStatus: string) => void;
 }) {
   return (
-    <div
-      style={{
-        background: "#18181b",
-        border: "1px solid #27272a",
-        borderRadius: 10,
-        marginBottom: 12,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          padding: "14px 14px 10px 14px",
-        }}
-      >
+    <div className="bg-[#18181b] border border-[#27272a] rounded-[10px] mb-3 overflow-hidden">
+      <div className="flex justify-between items-start p-3.5 pb-2.5">
         <div>
-          <div style={{ fontWeight: 700, fontSize: 19, color: "#93c5fd" }}>
+          <div className="font-bold text-lg text-[#93c5fd]">
             {order.items[0].order_id}
           </div>
-          <div style={{ fontSize: 12.5, color: "#a1a1aa", marginTop: 2 }}>
+          <div className="text-[12.5px] text-[#a1a1aa] mt-0.5">
             {console.log("order meta is", order)}
             {getOrderMeta(order)}
           </div>
         </div>
       </div>
 
-      <div style={{ padding: "0 14px 14px 14px" }}>
+      <div className="px-3.5 pb-3.5">
         {order.items.length === 0 ? (
-          <div style={{ fontSize: 12.5, color: "#71717a" }}>No items</div>
+          <div className="text-[12.5px] text-[#71717a]">No items</div>
         ) : (
           order.items.map((item) => (
             <ItemRow
@@ -236,17 +179,12 @@ function TicketCard({
 
 function Legend({ color, label }: { color: string; label: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+    <div className="flex items-center gap-1.5">
       <span
-        style={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          background: color,
-          display: "inline-block",
-        }}
+        className="w-2 h-2 rounded-full inline-block"
+        style={{ background: color }}
       />
-      <span style={{ color: "#a1a1aa" }}>{label}</span>
+      <span className="text-[#a1a1aa]">{label}</span>
     </div>
   );
 }
@@ -261,46 +199,15 @@ function ColumnHeader({
   count: number;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 14,
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          fontSize: 13,
-          fontWeight: 700,
-          letterSpacing: 0.5,
-          color: "#d4d4d8",
-        }}
-      >
+    <div className="flex justify-between items-center mb-3.5">
+      <div className="flex items-center gap-2 text-xs font-bold tracking-[0.5px] text-[#d4d4d8]">
         <span
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            background: dotColor,
-            display: "inline-block",
-          }}
+          className="w-2 h-2 rounded-full inline-block"
+          style={{ background: dotColor }}
         />
         {title.toUpperCase()}
       </div>
-      <span
-        style={{
-          background: "#27272a",
-          color: "#d4d4d8",
-          fontSize: 12,
-          fontWeight: 700,
-          padding: "2px 8px",
-          borderRadius: 6,
-        }}
-      >
+      <span className="bg-[#27272a] text-[#d4d4d8] text-xs font-bold px-2 py-0.5 rounded">
         {count}
       </span>
     </div>
@@ -350,6 +257,7 @@ export default function WorkflowBoard() {
 
     loadInitialOrders();
   }, []);
+
   useEffect(() => {
     socket.on("order:new", (payload: any) => {
       const order = normalizeOrderPayload(payload);
@@ -371,9 +279,9 @@ export default function WorkflowBoard() {
         return {
           ...prev,
           [order.id]: {
-            ...existingOrder, // Keep ALL existing properties
-            ...order, // Merge in new data
-            items: [...(existingOrder?.items || []), ...order.items], // Merge items
+            ...existingOrder,
+            ...order,
+            items: [...(existingOrder?.items || []), ...order.items],
           },
         };
       });
@@ -385,21 +293,17 @@ export default function WorkflowBoard() {
       toast.custom(
         (t) => (
           <div
-            className={`${t.visible ? "animate-enter" : "animate-leave"} w-[340px] rounded-[14px] overflow-hidden border border-[#2a2825] shadow-2xl`}
-            style={{ background: "#1c1917" }}
+            className={`${t.visible ? "animate-enter" : "animate-leave"} w-[340px] rounded-[14px] overflow-hidden border border-[#2a2825] shadow-2xl bg-[#1c1917]`}
           >
             {/* Header bar */}
-            <div
-              className="flex items-center justify-between px-4 py-2.5"
-              style={{ background: "#78350f" }}
-            >
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#78350f]">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                <span className="text-[11px] font-semibold text-amber-300 uppercase tracking-widest">
+                <span className="text-[11px] font-semibold text-amber-300 uppercase tracking-wider">
                   Kitchen Alert
                 </span>
               </div>
-              <span className="text-[11px] font-[font2] text-amber-300 bg-[#92400e] px-2.5 py-0.5 rounded-full font-medium">
+              <span className="text-[11px] font-medium text-amber-300 bg-[#92400e] px-2.5 py-0.5 rounded-full">
                 Table {payload.tableNumber}
               </span>
             </div>
@@ -410,10 +314,10 @@ export default function WorkflowBoard() {
                 <span className="text-amber-400 text-lg">🍽</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-[font4] font-semibold text-white mb-1">
+                <p className="text-[15px] font-semibold text-white mb-1">
                   Order pending
                 </p>
-                <p className="text-[13px] font-[font2] text-[#a8a29e] leading-snug">
+                <p className="text-xs text-[#a8a29e] leading-snug">
                   {payload.msg}
                 </p>
               </div>
@@ -421,20 +325,14 @@ export default function WorkflowBoard() {
 
             {/* Footer */}
             <div className="border-t border-[#2a2825] px-4 py-2.5 flex items-center justify-between">
-              <span className="text-[12px] text-[#57534e]">Just now</span>
+              <span className="text-xs text-[#57534e]">Just now</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => toast.dismiss(t.id)}
-                  className="text-[12px] text-[#a8a29e] bg-[#292524] border border-[#3a3532] px-3 py-1 rounded-lg"
+                  className="text-xs text-[#a8a29e] bg-[#292524] border border-[#3a3532] px-3 py-1 rounded-lg"
                 >
                   Dismiss
                 </button>
-                {/*<button
-                  onClick={() => toast.dismiss(t.id)}
-                  className="text-[12px] text-[#1c1917] bg-amber-400 px-3 py-1 rounded-lg font-semibold"
-                >
-                  Mark done
-                </button>*/}
               </div>
             </div>
           </div>
@@ -442,7 +340,6 @@ export default function WorkflowBoard() {
         { duration: 6000, position: "top-right" },
       );
       console.log("payload is", payload);
-      // alert("hi");
     });
 
     socket.on("order:update", (updatedItem: any) => {
@@ -496,7 +393,7 @@ export default function WorkflowBoard() {
             },
             ...current,
           ]);
-          delete next[updatedItem.order_id]; // ← ADD THIS LINE
+          delete next[updatedItem.order_id];
           return next;
         }
 
@@ -566,49 +463,23 @@ export default function WorkflowBoard() {
   const totalActive = Object.values(orders).length;
 
   return (
-    <div
-      style={{
-        background: "#0a0a0a",
-        minHeight: "100vh",
-        padding: "32px 28px",
-        fontFamily:
-          "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-        color: "white",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-          marginBottom: 28,
-          flexWrap: "wrap",
-          gap: 12,
-        }}
-      >
+    <div className="bg-[#0a0a0a] min-h-screen px-7 py-8 font-sans text-white">
+      <div className="flex justify-between items-end mb-7 flex-wrap gap-3">
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 700, margin: 0 }}>
-            Workflow Board
-          </h1>
-          <p style={{ color: "#a1a1aa", fontSize: 14, marginTop: 6 }}>
+          <h1 className="text-3xl font-bold m-0">Workflow Board</h1>
+          <p className="text-[#a1a1aa] text-sm mt-1.5">
             {totalActive} active tickets across all stations.
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: 18, fontSize: 13.5 }}>
+        <div className="flex gap-4.5 text-[13.5px]">
           <Legend color="#9ca3af" label="Pending" />
           <Legend color="#fb923c" label="Preparing" />
           <Legend color="#4ade80" label="Ready" />
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, minmax(240px, 1fr))",
-          gap: 18,
-        }}
-      >
+      <div className="grid grid-cols-4 gap-4.5">
         {order_columns_priority.map((colId) => {
           const meta = COLUMN_META[colId];
           console.log("yo meta cai", meta);
@@ -618,13 +489,7 @@ export default function WorkflowBoard() {
           return (
             <div
               key={colId}
-              style={{
-                background: "#111113",
-                border: "1px solid #27272a",
-                borderRadius: 14,
-                padding: 16,
-                minHeight: 300,
-              }}
+              className="bg-[#111113] border border-[#27272a] rounded-[14px] p-4 min-h-[300px]"
             >
               <ColumnHeader
                 dotColor={meta.dotColor}
@@ -649,125 +514,45 @@ export default function WorkflowBoard() {
           );
         })}
 
-        <div
-          style={{
-            background: "#111113",
-            border: "1px solid #27272a",
-            borderRadius: 14,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 14,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: 0.5,
-                color: "#d4d4d8",
-              }}
-            >
+        {/* Served Column */}
+        <div className="bg-[#111113] border border-[#27272a] rounded-[14px] p-4 flex flex-col">
+          <div className="flex justify-between items-center mb-3.5">
+            <div className="flex items-center gap-2 text-xs font-bold tracking-[0.5px] text-[#d4d4d8]">
               <ChevronsRight size={15} color="#71717a" />
               SERVED
             </div>
-            <span
-              style={{
-                background: "#27272a",
-                color: "#d4d4d8",
-                fontSize: 12,
-                fontWeight: 700,
-                padding: "2px 8px",
-                borderRadius: 6,
-              }}
-            >
+            <span className="bg-[#27272a] text-[#d4d4d8] text-xs font-bold px-2 py-0.5 rounded">
               {served.length}
             </span>
           </div>
 
-          <div style={{ flex: 1 }}>
+          <div className="flex-1">
             {served.slice(0, 4).map((ticket) => (
               <div
                 key={`${ticket.id}-${ticket.meta}`}
-                style={{
-                  background: "#18181b",
-                  border: "1px solid #27272a",
-                  borderRadius: 10,
-                  padding: 14,
-                  marginBottom: 12,
-                }}
+                className="bg-[#18181b] border border-[#27272a] rounded-[10px] p-3.5 mb-3"
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
+                <div className="flex justify-between items-center">
                   <div>
-                    <div
-                      style={{
-                        fontWeight: 700,
-                        fontSize: 17,
-                        color: "#d4d4d8",
-                      }}
-                    >
+                    <div className="font-bold text-[17px] text-[#d4d4d8]">
                       #{ticket.id.slice(0, 6)}
                     </div>
-                    <div
-                      style={{
-                        fontSize: 11.5,
-                        color: "#71717a",
-                        marginTop: 2,
-                        textTransform: "uppercase",
-                      }}
-                    >
+                    <div className="text-[11.5px] text-[#71717a] mt-0.5 uppercase">
                       {ticket.meta}
                     </div>
                   </div>
-                  <div
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: "rgba(34,197,94,0.2)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+                  <div className="w-5.5 h-5.5 rounded-full bg-green-500/20 flex items-center justify-center">
                     <Check size={13} color="#4ade80" />
                   </div>
                 </div>
-                <div style={{ fontSize: 13, color: "#a1a1aa", marginTop: 8 }}>
+                <div className="text-sm text-[#a1a1aa] mt-2">
                   {ticket.summary}
                 </div>
               </div>
             ))}
           </div>
 
-          <button
-            style={{
-              background: "transparent",
-              border: "none",
-              borderTop: "1px solid #27272a",
-              color: "#60a5fa",
-              fontSize: 13.5,
-              fontWeight: 600,
-              padding: "12px 0 2px 0",
-              cursor: "pointer",
-            }}
-          >
+          <button className="bg-transparent border-0 border-t border-[#27272a] text-[#60a5fa] text-[13.5px] font-semibold py-3 px-0 cursor-pointer">
             View All History
           </button>
         </div>
