@@ -1,5 +1,13 @@
 import Header from "../../components/waiterComponents/header";
-import { Check, CreditCard, Minus, Plus, Search, X } from "lucide-react";
+import {
+  Check,
+  CircleCheck,
+  CreditCard,
+  Minus,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { menuCategory, menuItems } from "../../constants/constants";
 import { useWaiterStore } from "../../store/waiter.store";
@@ -66,6 +74,10 @@ const MenuAddInPrevious = () => {
   const filteredItems = menuItems.filter(
     (item) => item.category_id === selectedCategory,
   );
+
+  function markServed(orderId: string) {
+    socket.emit("order:served", { order_id: orderId });
+  }
 
   function sendToKitchen() {
     try {
@@ -268,9 +280,18 @@ const MenuAddInPrevious = () => {
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <h1>${item.price_snapshot}</h1>
-                      <button className="border text-[#C8DCC9] font-[font2] bg-[#518D55] cursor-pointer pl-3 pr-3 p-1 rounded-xl">
-                        Mark Served
-                      </button>
+                      {item.status === "served" ? (
+                        <div className="bg-[#D2DED1] flex text-[#768371] flex-row p-1 pr- pl-2 gap-2 border rounded-xl">
+                          <CircleCheck />
+                          <span className="text-[#768371]">Served</span>
+                        </div>
+                      ) : item.status === "ready" ? (
+                        <button className="border text-[#C8DCC9] font-[font2] bg-[#518D55] cursor-pointer pl-3 pr-3 p-1 rounded-xl">
+                          Mark Served
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
                 ))}
