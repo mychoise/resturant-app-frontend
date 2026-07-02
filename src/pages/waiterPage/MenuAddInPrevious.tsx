@@ -15,12 +15,13 @@ import { data, useNavigate } from "react-router-dom";
 import { socket } from "../../lib/socket";
 import { getAllOrderedItems } from "../../api/api";
 import { usePreviousOrders } from "../../hooks/auth.hook";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MenuAddInPrevious = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     "13a310e8-c43f-4edf-adbb-aedcecbc1e29",
   );
-  // const [cartItems, setCartItems] = useState<any>([]);
   const navigate = useNavigate();
   const {
     table,
@@ -69,6 +70,29 @@ const MenuAddInPrevious = () => {
     };
   }, []);
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const handleOrderServeSuccess = (data: any) => {
+      console.log("table is", table);
+      console.log("data from backend after update is", data?.id);
+      toast.success("order updated successfully");
+      queryClient.setQueryData(["previous-orders", table?.id], (old: any) => {
+        console.log("old data is", old);
+        if (!old) return old;
+        return {
+          ...old,
+          orderedItem: old.orderedItem.map((item: any) =>
+            item.id === data.id ? { ...item, status: "served" } : item,
+          ),
+        };
+      });
+    };
+
+    socket.on("order:served", handleOrderServeSuccess);
+    return () => socket.off("order:served", handleOrderServeSuccess);
+  }, [table?.id, queryClient]);
+
   console.log(cartItems);
 
   const filteredItems = menuItems.filter(
@@ -76,7 +100,8 @@ const MenuAddInPrevious = () => {
   );
 
   function markServed(orderId: string) {
-    socket.emit("order:served", { order_id: orderId });
+    console.log("order to be marked receive for", orderId);
+    socket.emit("order:served", { order_item_id: orderId });
   }
 
   function sendToKitchen() {
@@ -286,7 +311,10 @@ const MenuAddInPrevious = () => {
                           <span className="text-[#768371]">Served</span>
                         </div>
                       ) : item.status === "ready" ? (
-                        <button className="border text-[#C8DCC9] font-[font2] bg-[#518D55] cursor-pointer pl-3 pr-3 p-1 rounded-xl">
+                        <button
+                          onClick={() => markServed(item?.id)}
+                          className="border text-[#C8DCC9] font-[font2] bg-[#518D55] cursor-pointer pl-3 pr-3 p-1 rounded-xl"
+                        >
                           Mark Served
                         </button>
                       ) : (
@@ -370,7 +398,8 @@ const MenuAddInPrevious = () => {
                             )?.quantity || 0
                           }
                           type="number"
-                          className="w-full font-[font5] outline-0 bg-transparent border-none text-[#181916]"
+                          className="w-full font-[font5] outline-0 bg-transparent border-none text-[#18
+                          1916]"
                         ></input>
                       </div>
                       <button onClick={() => decreaseQantity(item.id)}>
