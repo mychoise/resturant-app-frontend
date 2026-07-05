@@ -5,10 +5,11 @@ import { menuCategory, menuItems } from "../../constants/constants";
 import { useWaiterStore } from "../../store/waiter.store";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../lib/socket";
+import { useGetMenu } from "../../hooks/auth.hook";
 
 const MenuPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(
-    "13a310e8-c43f-4edf-adbb-aedcecbc1e29",
+      "e9ab886b-3ec2-44b6-ba89-36219a535717"
   );
   // const [cartItems, setCartItems] = useState<any>([]);
   const navigate = useNavigate();
@@ -21,7 +22,10 @@ const MenuPage = () => {
     deleteItem,
   } = useWaiterStore();
 
-  useEffect(() => {
+
+    const { data } = useGetMenu();
+
+    useEffect(() => {
     if (!table) {
       navigate("/");
     }
@@ -86,11 +90,14 @@ const MenuPage = () => {
   //   );
   // };
 
-  const filteredItems = menuItems.filter(
+  const filteredItems = data?.data.filter(
     (item) => item.category_id === selectedCategory,
   );
 
-  function sendToKitchen() {
+
+    console.log("filtered items are", filteredItems);
+
+    function sendToKitchen() {
     try {
       if (!table?.id) {
         console.error("Cannot send order without a selected table.");
@@ -161,7 +168,7 @@ const MenuPage = () => {
           {/*list upper*/}
           <div>
             <div className=" flex gap-4 mt-5">
-              {menuCategory.map((item, index) => (
+              {data?.category?.map((item, index) => (
                 <button
                   key={index}
                   className={`${selectedCategory === item.id ? "bg-black text-white" : "bg-white border border-[#C8C7BF] text-[#474741]"} rounded-3xl pr-5 pl-5 cursor-pointer pb-2 pt-2`}
@@ -178,7 +185,7 @@ const MenuPage = () => {
           {/*<hr className="mt-5 border-[#C8C7BF]"></hrs>*/}
           <div className="mt-9 border-t border-[#C8C7BF]  p-10 -ml-10">
             <div className="flex flex-row flex-wrap gap-8">
-              {filteredItems.map((item) => (
+              {filteredItems?.map((item) => (
                 <div
                   key={item.id}
                   className="w-95 overflow-hidden hover:border-[#735C00] cursor-pointer bg-[#F9F3EB] border border-[#C8C7BF] mb-2 rounded-2xl"

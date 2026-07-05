@@ -14,13 +14,13 @@ import { useWaiterStore } from "../../store/waiter.store";
 import { data, useNavigate } from "react-router-dom";
 import { socket } from "../../lib/socket";
 import { getAllOrderedItems } from "../../api/api";
-import { usePreviousOrders } from "../../hooks/auth.hook";
+import { useGetMenu, usePreviousOrders } from "../../hooks/auth.hook";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MenuAddInPrevious = () => {
   const [selectedCategory, setSelectedCategory] = useState(
-    "13a310e8-c43f-4edf-adbb-aedcecbc1e29",
+   "e9ab886b-3ec2-44b6-ba89-36219a535717",
   );
   const navigate = useNavigate();
   const {
@@ -39,7 +39,9 @@ const MenuAddInPrevious = () => {
     isError,
   } = usePreviousOrders(table?.id || "");
 
-  console.log("result is ", result?.orderedItem);
+  const {data} = useGetMenu()
+
+    console.log("result is ", result?.orderedItem);
 
   const orderData = null;
 
@@ -95,7 +97,7 @@ const MenuAddInPrevious = () => {
 
   console.log(cartItems);
 
-  const filteredItems = menuItems.filter(
+  const filteredItems = data?.data.filter(
     (item) => item.category_id === selectedCategory,
   );
 
@@ -192,7 +194,7 @@ const MenuAddInPrevious = () => {
               </button>
             </div>
             <div className=" flex gap-4 mt-5">
-              {menuCategory.map((item, index) => (
+              {data?.category.map((item, index) => (
                 <button
                   key={index}
                   className={`${selectedCategory === item.id ? "bg-black text-white" : "bg-white border border-[#C8C7BF] text-[#474741]"} rounded-3xl pr-5 pl-5 cursor-pointer pb-2 pt-2`}
@@ -211,7 +213,7 @@ const MenuAddInPrevious = () => {
             <div
               className={`flex ${curentView === "previous" && "hidden"} none flex-row flex-wrap gap-8`}
             >
-              {filteredItems.map((item) => (
+              {filteredItems?.map((item) => (
                 <div
                   key={item.id}
                   className="w-95 overflow-hidden hover:border-[#735C00] cursor-pointer bg-[#F9F3EB] border border-[#C8C7BF] mb-2 rounded-2xl"

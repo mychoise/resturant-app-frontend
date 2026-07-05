@@ -5,9 +5,10 @@ import {
   getTable,
   getAllOrderedItems,
   createPayment,
+  getAllMenuItems,
 } from "../api/api";
 import { useWaiterStore } from "../store/waiter.store";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 
 export const useLogin = () => {
   const { user, setUser } = useWaiterStore();
@@ -90,7 +91,31 @@ export const usePay = () => {
       console.log("Payment successful:", data);
     },
     onError: (error) => {
-      console.error("Payment failed:", error);
-    },
+        const errorMessage =
+          typeof error.response?.data?.message === "string"
+            ? error.response.data.message
+            : error.response?.data?.message?.[0] // If it's an array
+              ? error.response.data.message[0]
+              : error.message || "Payment failed. Please try again.";
+
+        console.error("Payment error:", errorMessage);
+
+        toast.error(errorMessage);
+      },
   });
 };
+
+
+export const useGetMenu = () => {
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["menu"],
+        queryFn: async () => {
+            const res = await getAllMenuItems();
+            console.log("response for menu is", res);
+            return res;
+        },
+        retry: false,
+    })
+
+    return { isLoading, isError, data };
+}

@@ -82,6 +82,20 @@ export const createPayment = async (
     return result.data;
   } catch (error) {
     console.error("Error creating payment:", error);
-    toast.error("Error creating payment. Please try again.");
+      toast.error("Error creating payment. Please try again.");
+      throw error;
   }
 };
+
+
+export const getAllMenuItems = async () => {
+    try {
+        const result = await axiosInstance.get("/menu/all")
+        return result.data;
+    }
+    catch (error) {
+        console.log("error in get menu items", error.response?.data || error.message);
+        toast.error("Error fetching menu items. Please try again.");
+        throw error;
+    }
+}

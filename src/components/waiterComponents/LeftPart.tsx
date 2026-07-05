@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { sepratedColor, table } from "../../constants/constants";
 import { useTable } from "../../hooks/auth.hook";
 import { socket } from "../../lib/socket";
-import { useWaiterStore } from "../../store/waiter.store";
 import { useQueryClient } from "@tanstack/react-query";
 
 const LeftPart = ({ selectedTable, setSelectedTable }) => {
