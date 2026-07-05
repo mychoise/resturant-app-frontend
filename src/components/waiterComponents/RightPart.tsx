@@ -6,7 +6,7 @@ const RightPart = ({ selectedTable }: { selectedTable: string | null }) => {
   const navigate = useNavigate();
   return (
     <div>
-      <div className="right-part bg-[#F6F3EF] w-120 rounded-xl max-h-80 p-10 border border-[#C8C7BF]">
+      <div className="right-part sm:mr-0 mr-3 bg-[#F6F3EF] w-auto sm:w-120 rounded-xl max-h-80 p-10 border border-[#C8C7BF]">
         <div>
           <h1 className="font-[font4] text-[20px] ">Order Details</h1>
           <h1 className="font-[font2]  text-[16px] text-[#474741]">

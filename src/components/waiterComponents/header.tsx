@@ -31,7 +31,7 @@ const Header = ({ page }: { page: string }) => {
           </span>
         </div>
 
-        <div className="font-[font4] text-3xl mt-4">Floor Plan: Main Hall</div>
+        <div className="font-[font4] text-3xl mt-5 sm:mt-4">Floor Plan: Main Hall</div>
       </div>
     </div>
   );

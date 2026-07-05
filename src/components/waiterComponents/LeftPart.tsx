@@ -5,7 +5,7 @@ import { socket } from "../../lib/socket";
 import { useQueryClient } from "@tanstack/react-query";
 
 const LeftPart = ({ selectedTable, setSelectedTable }) => {
-  let { data } = useTable();
+  const { data } = useTable();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -33,10 +33,10 @@ const LeftPart = ({ selectedTable, setSelectedTable }) => {
   console.log(selectedTable);
   return (
     <div>
-      <div className="left-part w-262.5 ">
+      <div className="left-part sm:mr-0 mr-3 w-full sm:w-262.5 ">
         {/* //top part */}
-        <div className="bg-[#F6F3EF] pl-4 h-14 flex justify-between gap-6 border border-[#C8C7BF] rounded-xl">
-          <div className="flex gap-6">
+        <div className="bg-[#F6F3EF] pl-4 sm:mr-0 mr-3 sm:h-14 sm:pt-0 sm:pb-0 pt-2 pb-2 h-auto  flex justify-between gap-6 border border-[#C8C7BF] rounded-xl">
+          <div className="flex flex-col  sm:flex-row gap-6">
             {sepratedColor.map((item, index) => (
               <div key={index} className="flex items-center h-full gap-3">
                 <div
@@ -49,14 +49,14 @@ const LeftPart = ({ selectedTable, setSelectedTable }) => {
             ))}
           </div>
 
-          <div className="flex items-center gap-3 text-[17px] font-[font1] text-[#474741] italic mr-7">
+          <div className=" items-center gap-3 hidden sm:flex   text-[17px] font-[font1] text-[#474741] italic mr-7">
             <h1>Showing Main Dining Zone</h1>
           </div>
         </div>
 
         {/* downpart */}
 
-        <div className="bg-[#F6F3EF]  relative mt-6  rounded-xl border border-[#C8C7BF] h-120">
+        <div className="bg-[#F6F3EF] sm:mr-0 mr-3 flex flex-col relative mt-6 pb-9 rounded-xl border border-[#C8C7BF] h-auto sm:h-120">
           {/* //entrance part */}
           <div className=" flex items-center justify-center ">
             <div className="bg-[#F0EDE9] pb-1.5 font-semibold pt-1 font-[font2] uppercase text-[13px] tracking-widest text-[#474741] rounded-b-2xl text-center w-35 border border-[#C8C7BF]">
@@ -64,13 +64,13 @@ const LeftPart = ({ selectedTable, setSelectedTable }) => {
             </div>
           </div>
 
-          <div className="pl-20 pt-10 flex flex-wrap gap-25">
+          <div className="sm:pl-20  pl-10 sm:pr-0 pr-5 pt-10 flex justify-center sm:justify-start flex-wrap gap-10 sm:gap-25">
             {data?.map((item, index) => (
               <div key={index}>
                 <button
                   // disabled={item.is_occupied === true}
                   onClick={() => setSelectedTable(item)}
-                  className={`w-21  ${item.is_occupied === true ? "bg-[#EBE9E5]  cursor-not-allowed" : selectedTable?.table_number === item.table_number ? "bg-[#FFE088] cursor-pointer" : "bg-[#FFFFFF] cursor-pointer"}  ${item.value === "vip" ? "w-40" : "w-21"} ${item.value === "vip" ? "font-[font4] text-2xl" : "font-[font2]"} h-21 rounded-xl  border-2 border-[#C8C7BF]  flex items-center justify-center   font-bold`}
+                  className={`w-21  ${item.is_occupied === true ? "bg-[#EBE9E5]  cursor-not-allowed" : selectedTable?.table_number === item.table_number ? "bg-[#FFE088] cursor-pointer" : "bg-[#FFFFFF] cursor-pointer"}  ${item.value === "vip" ? "w-40" : "sm:w-21 w-10"} ${item.value === "vip" ? "font-[font4] text-2xl" : "font-[font2]"} sm:h-21 h-20 rounded-xl  border-2 border-[#C8C7BF]  flex items-center justify-center   font-bold`}
                 >
                   {String(item.table_number).padStart(2, "0")}
                   {/*{item.value === "vip"

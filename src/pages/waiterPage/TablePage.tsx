@@ -107,9 +107,9 @@ const TablePage = () => {
   });
 
   return (
-    <div className="ml-10 mt-10 bg-[#FCF9F5]">
+    <div className="sm:ml-10 ml-3 mt-10 bg-[#FCF9F5]">
       <Header page="select-table" />
-      <div className="flex mt-10 gap-10">
+      <div className="flex flex-col sm:flex-row mt-10 gap-10">
         {/* left part */}
         <LeftPart
           selectedTable={selectedTable}
