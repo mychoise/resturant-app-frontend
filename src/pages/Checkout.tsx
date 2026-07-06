@@ -80,7 +80,7 @@ const Checkout = () => {
         showEsewasuccess={showEsewasuccess}
         setshowEsewasuccess={setshowEsewasuccess}
       />
-      <Link to={"/"} className="text-[#735C00] pl-8 font-[font5] text-[48px]">
+      <Link to={"/"} className="text-[#735C00] pl-8 font-[font5] sm:text-[48px] text-2xl ">
         THE BANQUET PALACE
       </Link>
 
@@ -89,7 +89,7 @@ const Checkout = () => {
           onClick={() => setshow(!show)}
           className="text-[#1C1C16] hover:text-[#735C00] transition-colors cursor-pointer flex items-center flex-col"
         >
-          <h1 className="text-[45px] tracking-wide  font-[font5] ">
+          <h1 className="sm:text-[45px] text-2xl tracking-wide  font-[font5] ">
             View Particulars
           </h1>
           <ChevronDown
@@ -100,14 +100,14 @@ const Checkout = () => {
       <div
         className={`w-screen -pl-20 flex ${show ? "opacity-100" : "hidden opacity-0"} transition-all duration-1000 items-center justify-center`}
       >
-        <div className=" border-t  border-[#735C00] pt-7 w-120">
+        <div className=" border-t p-5  border-[#735C00] pt-7 w-120">
           {data?.orderedItem?.map((item, index) => (
             <div key={index} className="flex justify-between mb-3">
               <div className="flex font-serif gap-4 text-lg">
                 <h1 className="text-[#797877]">{index + 1}.</h1>
                 <h1>{item.item_name}</h1>
               </div>
-              <h1 className="font-[font5] text-lg">{item.price_snapshot}</h1>
+              <h1 className="font-[font5] text-lg">${item.price_snapshot}</h1>
             </div>
           ))}
 
@@ -116,7 +116,7 @@ const Checkout = () => {
               <div className="flex justify-between font-serif text-lg pt-2">
                 <h1 className="text-[#5F5E5E]">Subtotal</h1>
                 <h1 className="text-[#5F5E5E] font-[font2] text-[12px]">
-                  {data?.order?.total_price}
+                  ${data?.order?.total_price}
                 </h1>
               </div>
               <div className="flex justify-between font-serif text-lg ">
@@ -130,20 +130,20 @@ const Checkout = () => {
             </div>
             <div className="flex justify-between font-[font5] text-[#735C00] mt-1 pt-4 border-t border-[#D0C5AF]">
               <h1 className="text-xl">Summation</h1>
-              <h1 className="text-4xl">{data?.order?.total_price}</h1>
+              <h1 className="text-4xl">${data?.order?.total_price}</h1>
             </div>
           </div>
         </div>
       </div>
 
-      <div className=" flex justify-center items-center flex-col mt-40">
+      <div className=" flex gap-10 sm:gap-20 justify-center items-center flex-col mt-20 sm:mt-40">
         <h1 className="uppercase font-[font2] font-semibold text-[14px] [word-spacing:0.5em] [letter-spacing:0.5em] text-[#5F5E5E]">
           GRand Total
         </h1>
-        <h1 className="text-[300px] -mt-15 font-[font5]">
+        <h1 className="sm:text-[300px] text-9xl sm:-mt-15 font-[font5]">
           ${data?.order.total_price}
         </h1>
-        <h1 className="italic text-[#735C00] text-[14px] -mt-20 font-[font5] tracking-tight">
+        <h1 className="italic text-[#735C00] text-[14px] sm:-mt-20 font-[font5] tracking-tight">
           {" "}
           THE BANQUET PALACE
         </h1>
@@ -156,12 +156,12 @@ const Checkout = () => {
               {/* Left Method */}
               <button
                 onClick={() => payInCash()}
-                className="flex-1 cursor-pointer  px-8 py-12 flex flex-col justify-center items-start border-r border-gray-200"
+                className="flex-1 cursor-pointer   sm:px-8 sm:py-12 py-3 flex flex-col justify-center items-start border-r border-gray-200"
               >
                 <p className="text-xs font-semibold tracking-wider text-gray-600 mb-4">
                   METHOD 01
                 </p>
-                <h2 className="text-4xl font-serif text-gray-900">
+                <h2 className="sm:text-4xl text-2xl  font-serif text-gray-900">
                   Pay in Cash
                 </h2>
               </button>
@@ -169,12 +169,12 @@ const Checkout = () => {
               {/* Right Method */}
               <button
                 onClick={() => payInEsewa()}
-                className="flex-1 cursor-pointer px-8 py-12 flex flex-col justify-center items-start"
+                className="flex-1 cursor-pointer sm:px-8 px-2 sm:py-12 py-3 flex flex-col justify-center items-start"
               >
                 <p className="text-xs font-semibold tracking-wider text-gray-600 mb-4">
                   METHOD 02
                 </p>
-                <h2 className="text-4xl font-serif text-gray-900">
+                <h2 className="sm:text-4xl w-full text-2xl font-serif text-gray-900">
                   Digital Transfer
                 </h2>
               </button>

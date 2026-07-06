@@ -6,9 +6,9 @@ const PayinEsewa = ({ showEsewasuccess, setshowEsewasuccess }) => {
   const navigate = useNavigate();
   return (
     <div
-      className={`bg-[ #f7faf700] z-50 ${showEsewasuccess === true ? "" : "hidden"} backdrop-blur-2xl absolute flex items-center justify-center w-screen h-screen top-0`}
+      className={`bg-[ #f7faf700] z-50 ${showEsewasuccess === true ? "" : "hidden"} backdrop-blur-lg absolute flex items-center justify-center w-screen h-screen top-0`}
     >
-      <div className="bg-[#F7FAF7] w-[30%] gap-5 items-center flex-col justify-center h-[70%] rounded-2xl flex shadow-lg">
+      <div className="bg-[#F7FAF7] w-[90%] sm:w-[30%] gap-5 sm:p-0 p-5 items-center flex-col justify-center h-auto  sm:h-[70%] rounded-2xl flex shadow-lg">
         <LeafyGreen color="#4E6050" width={48} height={48} />{" "}
         <h1 className="text-3xl font-[font5]">Payment Tracked</h1>
         <h1 className="font-[font2] text-center w-[60%] text-[#615B54]">

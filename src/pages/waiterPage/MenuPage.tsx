@@ -70,41 +70,6 @@ const MenuPage = () => {
 
   console.log(cartItems);
 
-  // const addToCart = (item: any) => {
-  //   setCartItems((prevItems: any) => [
-  //     ...prevItems,
-  //     {
-  //       id: item.id,
-  //       name: item.name,
-  //       price: item.price,
-  //       quantity: 1,
-  //     },
-  //   ]);
-  // };
-
-  // const increaseQantity = (itemId: number) => {
-  //   setCartItems((prevItems: any) =>
-  //     prevItems.map((item: any) =>
-  //       item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
-  //     ),
-  //   );
-  // };
-
-  // const decreaseQantity = (itemId: number) => {
-  //   setCartItems((prevItems: any) =>
-  //     prevItems.map((item: any) =>
-  //       item.id === itemId
-  //         ? { ...item, quantity: Math.max(1, item.quantity - 1) }
-  //         : item,
-  //     ),
-  //   );
-  // };
-
-  // const deleteItem = (itemId: number) => {
-  //   setCartItems((prevItems: any) =>
-  //     prevItems.filter((item: any) => item.id !== itemId),
-  //   );
-  // };
 
   const filteredItems = data?.data.filter(
     (item) => item.category_id === selectedCategory,
