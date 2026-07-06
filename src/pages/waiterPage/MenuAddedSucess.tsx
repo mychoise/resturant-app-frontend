@@ -4,11 +4,6 @@ import { useWaiterStore } from "../../store/waiter.store";
 import { useNavigate } from "react-router-dom";
 
 const MenuAddedSucess = () => {
-  // const items = [
-  //   { qty: 2, name: "Heirloom Burrata", price: 36.0 },
-  //   { qty: 1, name: "Seasonal Salad", price: 18.0 },
-  //   { qty: 1, name: "San Pellegrino 750ml", price: 9.0 },
-  // ];
   const { table, cart: items } = useWaiterStore();
   const navigate = useNavigate();
 
@@ -21,10 +16,10 @@ const MenuAddedSucess = () => {
   const total = items.reduce((sum, item) => sum + item.price, 0);
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className=" w-150 h-180">
-        <div className="">
-          <div className="w-24 h-24 bg-[#FED65B] ml-27 flex items-center justify-center rounded-full">
-            <div className="w-10 h-10 text-center  flex items-center justify-center bg-[#745C00] rounded-full">
+        <div className={`h-screen w-screen sm:w-150 sm:h-180  flex ${items.length>3?"":"justify-center"} flex-col `}>
+        <div className="mt-3 sm:mt-0">
+          <div className=" w-18 h-18  sm:w-24 sm:h-24 bg-[#FED65B] mb-3 sm:mb-0 ml-[40%] sm:ml-27 flex items-center justify-center rounded-full">
+            <div className="w-10 h-10 text-center  flex items-center justify-center  bg-[#745C00] rounded-full">
               <Check className="text-[#FED65B]" size={30} />
             </div>
           </div>
@@ -37,7 +32,7 @@ const MenuAddedSucess = () => {
         </div>
         {/*fgiggefgw8ohwhgeriigihgihis*/}
         <div>
-          <div className="w-full mt-3 border border-[#C8C7BF]  bg-[#FBF6EE] rounded-xl shadow-md px-6 py-6 font-serif">
+          <div className="w-full mt-3  sm:ml-0 sm:mr-0 border border-[#C8C7BF]  bg-[#FBF6EE] rounded-xl shadow-md px-6 py-6 font-serif">
             {/* Header */}
             <div className="flex items-start justify-between">
               <span className="text-[16px] font-[font2]  font-bold tracking-widest text-amber-700 uppercase">
@@ -100,22 +95,24 @@ const MenuAddedSucess = () => {
               The Banquet Palace
             </p>
           </div>
-        </div>
-        <div className="flex gap-3 ">
+              </div>
+              <div className="w-full flex  justify-center  ">
+        <div className="flex gap-1 w-[90%] sm:gap-3 sm:flex-row flex-col">
           <button
-            className={`text-[16px] flex items-center justify-center gap-3 w-[85%] rounded-xl bg-[#FCF9F5] cursor-pointer  tracking-widest   text-black font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border `}
+            className={`text-[16px] flex items-center justify-center gap-3 w-full sm:w-[85%] rounded-xl bg-[#FCF9F5] cursor-pointer  tracking-widest   text-black font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border `}
           >
             <Printer />
             Print Receipt
           </button>
           <button
             onClick={() => navigate("/")}
-            className={`text-[16px] flex items-center justify-center gap-3 w-[85%] rounded-xl bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
+            className={` text-sm flex items-center justify-center gap-3 w-full sm:w-[85%] rounded-xl bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-2 sm:mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
           >
             <Grid2x2 />
             Back to Floor Plan
           </button>
-        </div>
+                  </div>
+              </div>
       </div>
     </div>
   );

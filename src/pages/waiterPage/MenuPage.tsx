@@ -274,7 +274,8 @@ const MenuPage = () => {
               {/*Here we should add the cart part make sure it is there curent i will just keep it somewhere*/}
 
 
-                <div className={`bg-[#FBF8F4] border-l ${showCartMobile?"":"hidden"} absolute sm:fixed left-0 sm:left-auto sm:right-0 border-[#C2C1B9] mr-0 -mt-10 h-auto sm:h-screen w-full sm:w-[23%]`}>
+              <div className={`fixed sm:fixed left-0 z-50 sm:left-auto sm:right-0 w-full sm:w-[23%]`}>
+                <div className={`bg-[#FBF8F4] border-l ${showCartMobile?"":"hidden"}  overflow-scroll sm:fixed   border-[#C2C1B9] mr-0 -mt-10  sm:h-screen scroll-auto  left-0 sm:left-auto sm:right-0 w-full sm:w-[23%]`}>
                   {/*Heading*/}
                   <div
                       className="flex sm:hidden  w-full justify-end  items-end pt-5 pr-5">
@@ -376,7 +377,7 @@ const MenuPage = () => {
                     <div className="w-full h-40  flex items-center justify-center">
                       <button
                         onClick={() => sendToKitchen()}
-                        className={`text-[16px] w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
+                        className={`text-[16px] w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-0 sm:mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
                       >
                         Send to kitchen
                       </button>
@@ -387,11 +388,13 @@ const MenuPage = () => {
           </div>
 
 
-          <div className="bg-yellow-300 bottom-0 z-10 fixed sm:hidden right-10 flex items-center justify-center w-15 rounded-full h-15">
+          <div className="bg-yellow-300 bottom-5 z-10 fixed sm:hidden right-5 flex items-center justify-center w-15 rounded-full h-15">
               <button onClick={()=>setshowCartMobile(true)}>
                   <ShoppingCart />
               </button>
-          </div>
+              </div>
+
+              </div>
     </div>
   );
 
