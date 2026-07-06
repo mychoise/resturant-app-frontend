@@ -239,8 +239,8 @@ const MenuPage = () => {
               {/*Here we should add the cart part make sure it is there curent i will just keep it somewhere*/}
 
 
-              <div className={`fixed sm:fixed left-0 z-50 sm:left-auto sm:right-0 w-full sm:w-[23%]`}>
-                <div className={`bg-[#FBF8F4] border-l ${showCartMobile?"":"hidden"}  overflow-scroll sm:fixed   border-[#C2C1B9] mr-0 -mt-10  sm:h-screen scroll-auto  left-0 sm:left-auto sm:right-0 w-full sm:w-[23%]`}>
+              <div className={` fixed sm:fixed left-0 pb-20 z-50  sm:left-auto sm:right-0 w-full sm:w-[23%]`}>
+                <div className={`bg-[#FBF8F4] border-l ${showCartMobile ? "" : "hidden"}  overflow-scroll sm:fixed   border-[#C2C1B9] mr-0 -mt-10 h-screen sm:h-screen scroll-auto  left-0 sm:left-auto sm:right-0 w-full sm:w-[23%]`}>
                   {/*Heading*/}
                   <div
                       className="flex sm:hidden  w-full justify-end  items-end pt-5 pr-5">
@@ -248,7 +248,7 @@ const MenuPage = () => {
                           <X className="text-right" size={"30"} color="red" />
 
                       </button>
-</div>
+                      </div>
                   <div className="mt-8 z-50 ">
 
                       <h1 className="text-center font-[font4] tracking-wider text-[32px]">
@@ -348,9 +348,7 @@ const MenuPage = () => {
                       </button>
                     </div>
                   </div>
-
-
-          </div>
+                </div>
 
 
           <div className="bg-yellow-300 bottom-5 z-10 fixed sm:hidden right-5 flex items-center justify-center w-15 rounded-full h-15">
