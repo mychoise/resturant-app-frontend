@@ -15,6 +15,7 @@
     "@tanstack/react-query-devtools": "^5.101.0",
     "@types/howler": "^2.2.13",
     "axios": "^1.18.0",
+    "eruda": "^3.4.3",
     "gsap": "^3.15.0",
     "howler": "^2.2.4",
     "lucide-react": "^1.18.0",

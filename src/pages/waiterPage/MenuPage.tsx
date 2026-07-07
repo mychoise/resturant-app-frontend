@@ -6,6 +6,7 @@ import { useWaiterStore } from "../../store/waiter.store";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../lib/socket";
 import { useGetMenu } from "../../hooks/auth.hook";
+import toast from "react-hot-toast";
 
 const MenuPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(
@@ -48,7 +49,8 @@ const MenuPage = () => {
   }, [table, navigate]);
 
   useEffect(() => {
-    const handleOrderCreated = (order: any) => {
+      const handleOrderCreated = (order: any) => {
+          toast.success("Order created successfully!");
       console.log("order saved:", order);
       navigate("/success");
     };
