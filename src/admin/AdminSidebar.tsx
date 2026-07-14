@@ -1,21 +1,26 @@
 import { Banknote, LogOutIcon, User, UtensilsCrossed } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
+  const navigate = useNavigate();
   const sidebarItems = [
     {
       id: 1,
       name: "User Management",
+      link: "/admin/employees",
       icon: <User />,
     },
     {
       id: 2,
       name: "Order Management",
+      link: "/admin/order",
       icon: <UtensilsCrossed />,
     },
     {
       id: 3,
       name: "Payment Record",
+      link: "/payment",
       icon: <Banknote />,
     },
   ];
@@ -31,7 +36,10 @@ const AdminSidebar = () => {
         <div className="flex flex-col gap-4">
           {sidebarItems.map((item, index) => (
             <button
-              onClick={() => setSelectedItem(item.id)}
+              onClick={() => {
+                setSelectedItem(item.id);
+                navigate(item.link);
+              }}
               key={index}
               className="w-[90%] rounded-2xl"
             >
