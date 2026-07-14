@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Router } from "react-router-dom";
 import TablePage from "./pages/waiterPage/TablePage";
 import MenuPage from "./pages/waiterPage/MenuPage";
 import MenuAddedSucess from "./pages/waiterPage/MenuAddedSucess";
@@ -13,6 +13,8 @@ import { Toaster } from "react-hot-toast";
 import MenuAddInPrevious from "./pages/waiterPage/MenuAddInPrevious";
 import Checkout from "./pages/Checkout";
 import PayinEsewa from "./pages/waiterPage/PayinEsewa";
+import AdminViewEnployee from "./admin/AdminViewEnployee";
+import AdminLayout from "./layout/AdminLayout";
 
 const App = () => {
   useEffect(() => {
@@ -131,6 +133,10 @@ const App = () => {
               )
             }
           />
+
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="employees" element={<AdminViewEnployee />} />
+          </Route>
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
