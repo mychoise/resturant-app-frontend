@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   ClipboardList,
   Flame,
   Calendar,
-  SlidersHorizontal,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
@@ -16,7 +16,7 @@ const orders = [
     tableNote: "(Patio)",
     total: "$342.50",
     status: "Preparing",
-    time: "12:45 PM",
+    date: new Date(2023, 9, 24, 12, 45),
   },
   {
     id: "#EL-8943",
@@ -24,7 +24,7 @@ const orders = [
     tableNote: "(Booth)",
     total: "$118.00",
     status: "Pending",
-    time: "12:52 PM",
+    date: new Date(2023, 9, 24, 12, 52),
   },
   {
     id: "#EL-8941",
@@ -32,7 +32,7 @@ const orders = [
     tableNote: "(Window)",
     total: "$520.25",
     status: "Ready",
-    time: "12:30 PM",
+    date: new Date(2023, 9, 24, 12, 30),
   },
   {
     id: "#EL-8940",
@@ -40,7 +40,7 @@ const orders = [
     tableNote: "",
     total: "$45.00",
     status: "Served",
-    time: "12:15 PM",
+    date: new Date(2023, 9, 24, 12, 15),
   },
   {
     id: "#EL-8939",
@@ -48,7 +48,7 @@ const orders = [
     tableNote: "(Main Hall)",
     total: "$210.00",
     status: "Served",
-    time: "11:58 AM",
+    date: new Date(2023, 9, 24, 11, 58),
   },
 ];
 
@@ -67,12 +67,233 @@ const StatusBadge = ({ status }) => (
   </span>
 );
 
-// Single source of truth for the grid so header and body can never drift apart.
+const formatDate = (d) =>
+  d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+const formatTime = (d) =>
+  d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+const isSameDay = (a, b) =>
+  a &&
+  b &&
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+/* ---------- Calendar dropdown (single date select) ---------- */
+function DatePicker({ selected, onChange }) {
+  const [open, setOpen] = useState(false);
+  const [viewMonth, setViewMonth] = useState(
+    new Date(selected.getFullYear(), selected.getMonth(), 1),
+  );
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const daysInMonth = new Date(
+    viewMonth.getFullYear(),
+    viewMonth.getMonth() + 1,
+    0,
+  ).getDate();
+  const firstWeekday = new Date(
+    viewMonth.getFullYear(),
+    viewMonth.getMonth(),
+    1,
+  ).getDay();
+  const cells = [
+    ...Array(firstWeekday).fill(null),
+    ...Array.from(
+      { length: daysInMonth },
+      (_, i) => new Date(viewMonth.getFullYear(), viewMonth.getMonth(), i + 1),
+    ),
+  ];
+
+  const handlePick = (day) => {
+    if (!day) return;
+    onChange(day);
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-2 rounded-lg bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-300"
+      >
+        <Calendar size={16} />
+        {formatDate(selected)}
+      </button>
+
+      {open && (
+        <div className="absolute right-0 z-20 mt-2 w-72 rounded-xl border border-neutral-200 bg-white p-4 shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <button
+              type="button"
+              onClick={() =>
+                setViewMonth(
+                  new Date(
+                    viewMonth.getFullYear(),
+                    viewMonth.getMonth() - 1,
+                    1,
+                  ),
+                )
+              }
+              className="flex h-7 w-7 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100"
+            >
+              <ChevronLeft size={15} />
+            </button>
+            <span className="text-sm font-semibold text-neutral-800">
+              {viewMonth.toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                setViewMonth(
+                  new Date(
+                    viewMonth.getFullYear(),
+                    viewMonth.getMonth() + 1,
+                    1,
+                  ),
+                )
+              }
+              className="flex h-7 w-7 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100"
+            >
+              <ChevronRight size={15} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-7 gap-y-1 text-center text-[11px] font-medium text-neutral-400 mb-1">
+            {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+              <div key={i}>{d}</div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-y-1 text-center">
+            {cells.map((day, i) => {
+              if (!day) return <div key={i} />;
+              const isSelected = isSameDay(day, selected);
+              return (
+                <button
+                  type="button"
+                  key={i}
+                  onClick={() => handlePick(day)}
+                  className={`h-8 w-8 mx-auto flex items-center justify-center rounded-full text-xs transition-colors ${
+                    isSelected
+                      ? "bg-neutral-900 text-white font-semibold"
+                      : "text-neutral-700 hover:bg-neutral-100"
+                  }`}
+                >
+                  {day.getDate()}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Table filter dropdown ---------- */
+function TableSelect({ value, onChange, tables }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-2 rounded-lg bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-300"
+      >
+        {value === "all" ? "All Tables" : value}
+        <ChevronDown
+          size={16}
+          className={`transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 z-20 mt-2 w-44 rounded-lg border border-neutral-200 bg-white py-1 shadow-lg max-h-64 overflow-y-auto">
+          <button
+            type="button"
+            onClick={() => {
+              onChange("all");
+              setOpen(false);
+            }}
+            className={`flex w-full items-center px-3 py-2 text-sm text-left hover:bg-neutral-50 ${
+              value === "all"
+                ? "text-neutral-900 font-semibold"
+                : "text-neutral-600"
+            }`}
+          >
+            All Tables
+          </button>
+          {tables.map((t) => (
+            <button
+              type="button"
+              key={t}
+              onClick={() => {
+                onChange(t);
+                setOpen(false);
+              }}
+              className={`flex w-full items-center px-3 py-2 text-sm text-left hover:bg-neutral-50 ${
+                value === t
+                  ? "text-neutral-900 font-semibold"
+                  : "text-neutral-600"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const GRID_COLS = "grid-cols-[1fr_1.5fr_1fr_1fr_1fr_0.3fr]";
 
 export default function AdminOrderView() {
   const [activeTab, setActiveTab] = useState("Preparing");
+  const [tableFilter, setTableFilter] = useState("all");
+  const [selectedDate, setSelectedDate] = useState(new Date(2023, 9, 24));
+
   const tabs = ["All Orders", "Pending", "Preparing", "Ready", "Served"];
+  const tableOptions = [...new Set(orders.map((o) => o.table))];
+
+  const filtered = orders.filter((order) => {
+    const matchesTab = activeTab === "All Orders" || order.status === activeTab;
+    const matchesTable = tableFilter === "all" || order.table === tableFilter;
+    const matchesDate = isSameDay(order.date, selectedDate);
+    return matchesTab && matchesTable && matchesDate;
+  });
 
   return (
     <div className="min-h-screen w-full bg-[#FCF9F5] p-6">
@@ -117,7 +338,7 @@ export default function AdminOrderView() {
         </div>
 
         {/* Filter bar */}
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div className="relative z-10 flex items-center justify-between mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-2 flex-wrap">
             {tabs.map((tab) => (
               <button
@@ -135,14 +356,12 @@ export default function AdminOrderView() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 rounded-lg bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-300">
-              <Calendar size={16} />
-              Oct 24, 2023 - Today
-            </button>
-            <button className="flex items-center gap-2 rounded-lg bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-300">
-              <SlidersHorizontal size={16} />
-              More Filters
-            </button>
+            <DatePicker selected={selectedDate} onChange={setSelectedDate} />
+            <TableSelect
+              value={tableFilter}
+              onChange={setTableFilter}
+              tables={tableOptions}
+            />
           </div>
         </div>
 
@@ -160,11 +379,13 @@ export default function AdminOrderView() {
           </div>
 
           <div>
-            {orders.map((order, idx) => (
+            {filtered.map((order, idx) => (
               <div
                 key={order.id}
                 className={`grid ${GRID_COLS} items-center px-6 py-4 hover:bg-neutral-50 ${
-                  idx !== orders.length - 1 ? "border-b border-neutral-200" : ""
+                  idx !== filtered.length - 1
+                    ? "border-b border-neutral-200"
+                    : ""
                 }`}
               >
                 <div className="text-sm font-semibold text-neutral-900">
@@ -172,7 +393,9 @@ export default function AdminOrderView() {
                 </div>
 
                 <div className="text-sm text-neutral-800">
-                  {order.table}{" "}
+                  <span className="font-semibold text-neutral-900">
+                    {order.table}
+                  </span>{" "}
                   {order.tableNote && (
                     <span className="text-neutral-400">{order.tableNote}</span>
                   )}
@@ -186,7 +409,9 @@ export default function AdminOrderView() {
                   <StatusBadge status={order.status} />
                 </div>
 
-                <div className="text-sm text-neutral-500">{order.time}</div>
+                <div className="text-sm text-neutral-500">
+                  {formatTime(order.date)}
+                </div>
 
                 <div className="flex justify-end">
                   <button className="text-neutral-400 hover:text-neutral-700">
@@ -195,12 +420,18 @@ export default function AdminOrderView() {
                 </div>
               </div>
             ))}
+
+            {filtered.length === 0 && (
+              <div className="px-6 py-10 text-center text-sm text-neutral-400">
+                No orders match this filter.
+              </div>
+            )}
           </div>
 
           {/* Footer / Pagination */}
           <div className="flex items-center justify-between px-6 py-4">
             <div className="text-sm text-neutral-500">
-              Showing 5 of 124 orders
+              Showing {filtered.length} of 124 orders
             </div>
             <div className="flex items-center gap-2">
               <button

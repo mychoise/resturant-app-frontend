@@ -1,8 +1,9 @@
 import { Banknote, LogOutIcon, User, UtensilsCrossed } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
+  const [selectedItem, setSelectedItem] = React.useState<number>(1);
   const navigate = useNavigate();
   const sidebarItems = [
     {
@@ -20,12 +21,19 @@ const AdminSidebar = () => {
     {
       id: 3,
       name: "Payment Record",
-      link: "/payment",
+      link: "/admin/payment",
       icon: <Banknote />,
     },
   ];
 
-  const [selectedItem, setSelectedItem] = React.useState<number>(1);
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    const selectedItem = sidebarItems.find((item) => item.link === currentPath);
+    if (selectedItem) {
+      setSelectedItem(selectedItem.id);
+    }
+  }, []);
+
   return (
     <div className="flex bg-[#F6F3EF] flex-col gap-15 justify-between  pt-10 w-[14%] h-screen border-[#C8C7BF] border-r-2">
       <div className="flex pl-6 flex-col gap-15">

@@ -16,6 +16,7 @@ import PayinEsewa from "./pages/waiterPage/PayinEsewa";
 import AdminViewEnployee from "./admin/AdminViewEnployee";
 import AdminLayout from "./layout/AdminLayout";
 import AdminOrderView from "./admin/AdminOrderView";
+import AdminViewPayment from "./admin/AdminViewPayment";
 
 const App = () => {
   useEffect(() => {
@@ -138,6 +139,7 @@ const App = () => {
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="employees" element={<AdminViewEnployee />} />
             <Route path="order" element={<AdminOrderView />} />
+            <Route path="payment" element={<AdminViewPayment />} />
           </Route>
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<div>404 Not Found</div>} />
