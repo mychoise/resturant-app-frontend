@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route, Router } from "react-router-dom";
+import { Routes, Route, Router, useNavigate, Navigate } from "react-router-dom";
 import TablePage from "./pages/waiterPage/TablePage";
 import MenuPage from "./pages/waiterPage/MenuPage";
 import MenuAddedSucess from "./pages/waiterPage/MenuAddedSucess";
@@ -37,6 +37,7 @@ const App = () => {
 
   const { user, setUser, table } = useWaiterStore();
   const { isLoading, data } = useCheckAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (data) {
@@ -67,8 +68,10 @@ const App = () => {
                 <TablePage />
               ) : user && user?.role === "kitchen" ? (
                 <WorkflowBoard />
+              ) : user && user?.role === "admin" ? (
+                <AdminLayout />
               ) : (
-                <Login />
+                navigate("/login")
               )
             }
           />
@@ -130,16 +133,46 @@ const App = () => {
                 <TablePage />
               ) : user && user?.role === "kitchen" ? (
                 <WorkflowBoard />
+              ) : user && user?.role === "admin" ? (
+                <Navigate to="/admin" replace />
               ) : (
                 <Login />
               )
             }
           />
 
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="employees" element={<AdminViewEnployee />} />
-            <Route path="order" element={<AdminOrderView />} />
-            <Route path="payment" element={<AdminViewPayment />} />
+          <Route
+            path="/admin"
+            element={
+              user && user?.role === "admin" ? <AdminLayout /> : <Login />
+            }
+          >
+            <Route
+              index
+              element={
+                user && user?.role === "admin" ? (
+                  <AdminViewEnployee />
+                ) : (
+                  <Login />
+                )
+              }
+            />
+            <Route
+              path="order"
+              element={
+                user && user?.role === "admin" ? <AdminOrderView /> : <Login />
+              }
+            />
+            <Route
+              path="payment"
+              element={
+                user && user?.role === "admin" ? (
+                  <AdminViewPayment />
+                ) : (
+                  <Login />
+                )
+              }
+            />
           </Route>
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<div>404 Not Found</div>} />

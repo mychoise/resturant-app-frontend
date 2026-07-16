@@ -9,7 +9,7 @@ const AdminSidebar = () => {
     {
       id: 1,
       name: "User Management",
-      link: "/admin/employees",
+      link: "/admin",
       icon: <User />,
     },
     {
