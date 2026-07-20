@@ -9,6 +9,9 @@ import {
   getUserStats,
   getOrderStats,
   getPaymentStats,
+  getAllUsersAdmin,
+  getAllOrders,
+  getAllPayments,
 } from "../api/api";
 import { useWaiterStore } from "../store/waiter.store";
 import { toast } from "react-hot-toast";
@@ -155,6 +158,57 @@ export const useGetPaymentStats = () => {
     queryFn: async () => {
       const res = await getPaymentStats();
       console.log("response for payment stats is", res);
+      return res;
+    },
+    retry: false,
+  });
+
+  return { data, isLoading, isError };
+};
+
+export const useGetAllUsersAdmin = (page: number) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["all-users-admin", page],
+    queryFn: async () => {
+      const res = await getAllUsersAdmin(page);
+      console.log("response for all users admin is", res);
+      return res;
+    },
+    retry: false,
+  });
+
+  return { data, isLoading, isError };
+};
+
+export const useGetAllOrdersAdmin = (
+  page: number,
+  status?: string,
+  date?: string,
+  table_id?: string,
+) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["all-orders-admin", page, status, date, table_id],
+    queryFn: async () => {
+      const res = await getAllOrders(page, status, date, table_id);
+      console.log("response for all orders admin is", res);
+      return res;
+    },
+    retry: false,
+  });
+
+  return { data, isLoading, isError };
+};
+
+export const useGetAllPaymentsAdmin = (
+  page: number,
+  paymentType?: string,
+  date?: string,
+) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["all-payments-admin", page, paymentType, date],
+    queryFn: async () => {
+      const res = await getAllPayments(page, paymentType, date);
+      console.log("response for all payments admin is", res);
       return res;
     },
     retry: false,

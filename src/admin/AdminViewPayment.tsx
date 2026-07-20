@@ -11,7 +11,7 @@ import {
   Printer,
   MoreVertical,
 } from "lucide-react";
-import { useGetPaymentStats } from "../hooks/auth.hook";
+import { useGetAllPaymentsAdmin, useGetPaymentStats } from "../hooks/auth.hook";
 
 const transactions = [
   {
@@ -56,12 +56,31 @@ const formatDate = (d) =>
     year: "numeric",
   });
 
-const formatDateTime = (d) =>
-  `${formatDate(d)} · ${d.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  })}`;
+const formatDateTime = (d) => {
+  const date = new Date(d);
+
+  const year = date.getUTCFullYear(); // 2026
+  const month = date.getUTCMonth() + 1; // 5 (months are zero-indexed)
+  const day = date.getUTCDate(); // 15
+  const hours = date.getUTCHours(); // 16
+  const minutes = date.getUTCMinutes();
+
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const actualtime =
+    year +
+    "-" +
+    month.toString().padStart(2, "0") +
+    "-" +
+    day.toString().padStart(2, "0") +
+    " " +
+    (hours % 12 || 12).toString().padStart(2, "0") +
+    ":" +
+    minutes.toString().padStart(2, "0") +
+    " " +
+    ampm;
+
+  return actualtime;
+};
 
 const isSameDay = (a, b) =>
   a &&
@@ -257,13 +276,12 @@ export default function AdminViewPayment() {
   const [selectedDate, setSelectedDate] = useState(new Date(2023, 9, 24));
   const [paymentType, setPaymentType] = useState("all");
 
-  const filtered = transactions.filter((txn) => {
-    const matchesDate = isSameDay(txn.date, selectedDate);
-    const matchesType = paymentType === "all" || txn.category === paymentType;
-    return matchesDate && matchesType;
-  });
-
   const { data, isLoading } = useGetPaymentStats();
+
+  const { data: payments } = useGetAllPaymentsAdmin(1);
+  console.log("payments data is", payments?.data);
+
+  const filtered = payments?.data;
 
   return (
     <div className="min-h-screen w-full bg-[#FBF9F4] p-8">
@@ -303,7 +321,7 @@ export default function AdminViewPayment() {
             <div>
               <p className="text-sm text-neutral-500 mb-1">Cash On Hand</p>
               <p className="text-2xl font-bold text-neutral-900">
-                ${data.totalCash}
+                ${data?.totalCash}
               </p>
             </div>
           </div>
@@ -315,7 +333,7 @@ export default function AdminViewPayment() {
             <div>
               <p className="text-sm text-neutral-500 mb-1">eSewa Digital</p>
               <p className="text-2xl font-bold text-neutral-900">
-                ${data.totalOnline}
+                ${data?.totalOnline}
               </p>
             </div>
           </div>
@@ -349,27 +367,30 @@ export default function AdminViewPayment() {
           </div>
 
           <div>
-            {filtered.map((txn, idx) => (
+            {filtered?.map((txn, idx) => (
               <div
                 key={txn.id}
                 className={`grid grid-cols-[1.2fr_1.3fr_1.3fr_1fr_0.3fr] items-center px-6 py-4 hover:bg-neutral-50 ${
-                  idx !== filtered.length - 1
+                  idx !== filtered?.length - 1
                     ? "border-b border-neutral-200"
                     : ""
                 }`}
               >
                 <div className="text-sm font-semibold text-neutral-900">
-                  {txn.id}
+                  #{txn?.id.split("-")[1] + "-" + txn?.id.split("-")[2]}
                 </div>
                 <div className="text-sm text-neutral-500">
-                  {formatDateTime(txn.date)}
+                  {formatDateTime(txn?.created_at)}
                 </div>
                 <div className="flex items-center gap-3">
-                  <PaymentIcon category={txn.category} />
-                  <span className="text-sm text-neutral-800">{txn.type}</span>
+                  <PaymentIcon category={txn.payment_type} />
+                  <span className="text-sm text-neutral-800">
+                    {txn?.payment_type.charAt(0).toUpperCase() +
+                      txn?.payment_type.slice(1)}
+                  </span>
                 </div>
                 <div className="text-right text-sm font-bold text-neutral-900">
-                  {txn.amount}
+                  ${txn?.total_price}
                 </div>
                 <div className="flex justify-end">
                   <button className="text-neutral-400 hover:text-neutral-700">
@@ -379,7 +400,7 @@ export default function AdminViewPayment() {
               </div>
             ))}
 
-            {filtered.length === 0 && (
+            {filtered?.length === 0 && (
               <div className="px-6 py-10 text-center text-sm text-neutral-400">
                 No transactions match this filter.
               </div>

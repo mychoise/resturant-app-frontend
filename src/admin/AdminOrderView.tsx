@@ -8,7 +8,7 @@ import {
   ChevronRight,
   MoreHorizontal,
 } from "lucide-react";
-import { useGetOrderStats } from "../hooks/auth.hook";
+import { useGetAllOrdersAdmin, useGetOrderStats } from "../hooks/auth.hook";
 
 const orders = [
   {
@@ -75,12 +75,31 @@ const formatDate = (d) =>
     year: "numeric",
   });
 
-const formatTime = (d) =>
-  d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+const formatTime = (d) => {
+  const date = new Date(d);
+
+  const year = date.getUTCFullYear(); // 2026
+  const month = date.getUTCMonth() + 1; // 5 (months are zero-indexed)
+  const day = date.getUTCDate(); // 15
+  const hours = date.getUTCHours(); // 16
+  const minutes = date.getUTCMinutes();
+
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const actualtime =
+    year +
+    "-" +
+    month.toString().padStart(2, "0") +
+    "-" +
+    day.toString().padStart(2, "0") +
+    " " +
+    (hours % 12 || 12).toString().padStart(2, "0") +
+    ":" +
+    minutes.toString().padStart(2, "0") +
+    " " +
+    ampm;
+
+  return actualtime;
+};
 
 const isSameDay = (a, b) =>
   a &&
@@ -282,21 +301,20 @@ function TableSelect({ value, onChange, tables }) {
 const GRID_COLS = "grid-cols-[1fr_1.5fr_1fr_1fr_1fr_0.3fr]";
 
 export default function AdminOrderView() {
-  const [activeTab, setActiveTab] = useState("Preparing");
+  const [activeTab, setActiveTab] = useState("All Orders");
   const [tableFilter, setTableFilter] = useState("all");
   const [selectedDate, setSelectedDate] = useState(new Date(2023, 9, 24));
 
   const tabs = ["All Orders", "Pending", "Preparing", "Ready", "Served"];
   const tableOptions = [...new Set(orders.map((o) => o.table))];
 
-  const filtered = orders.filter((order) => {
-    const matchesTab = activeTab === "All Orders" || order.status === activeTab;
-    const matchesTable = tableFilter === "all" || order.table === tableFilter;
-    const matchesDate = isSameDay(order.date, selectedDate);
-    return matchesTab && matchesTable && matchesDate;
-  });
   const { data, isLoading, isError } = useGetOrderStats();
+  const { data: allOrder } = useGetAllOrdersAdmin(1);
+
+  console.log("all order is", allOrder?.orders);
   console.log("order data is", data);
+
+  const filtered = allOrder?.orders;
 
   return (
     <div className="min-h-screen w-full bg-[#FCF9F5] p-6">
@@ -386,7 +404,7 @@ export default function AdminOrderView() {
           </div>
 
           <div>
-            {filtered.map((order, idx) => (
+            {filtered?.map((order, idx) => (
               <div
                 key={order.id}
                 className={`grid ${GRID_COLS} items-center px-6 py-4 hover:bg-neutral-50 ${
@@ -396,28 +414,29 @@ export default function AdminOrderView() {
                 }`}
               >
                 <div className="text-sm font-semibold text-neutral-900">
-                  {order.id}
+                  # {order.id.split("-")[1] + "-" + order.id.split("-")[2]}
                 </div>
 
                 <div className="text-sm text-neutral-800">
                   <span className="font-semibold text-neutral-900">
-                    {order.table}
+                    {order.table_number}
                   </span>{" "}
-                  {order.tableNote && (
-                    <span className="text-neutral-400">{order.tableNote}</span>
-                  )}
                 </div>
 
                 <div className="text-left text-sm font-bold text-neutral-900">
-                  {order.total}
+                  ${order.total_price}
                 </div>
 
                 <div>
-                  <StatusBadge status={order.status} />
+                  <StatusBadge
+                    status={
+                      order.status[0].toUpperCase() + order.status.slice(1)
+                    }
+                  />
                 </div>
 
                 <div className="text-sm text-neutral-500">
-                  {formatTime(order.date)}
+                  {formatTime(order.updated_at)}
                 </div>
 
                 <div className="flex justify-end">
@@ -428,7 +447,7 @@ export default function AdminOrderView() {
               </div>
             ))}
 
-            {filtered.length === 0 && (
+            {filtered?.length === 0 && (
               <div className="px-6 py-10 text-center text-sm text-neutral-400">
                 No orders match this filter.
               </div>
@@ -438,7 +457,7 @@ export default function AdminOrderView() {
           {/* Footer / Pagination */}
           <div className="flex items-center justify-between px-6 py-4">
             <div className="text-sm text-neutral-500">
-              Showing {filtered.length} of 124 orders
+              Showing {filtered?.length} of 124 orders
             </div>
             <div className="flex items-center gap-2">
               <button

@@ -133,3 +133,53 @@ export const getPaymentStats = async () => {
     throw error;
   }
 };
+
+export const getAllUsersAdmin = async (page: number) => {
+  try {
+    const result = await axiosInstance.get(`/auth/users?page=${page}`);
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    toast.error("Error fetching all users. Please try again.");
+    throw error;
+  }
+};
+
+export const getAllOrders = async (
+  page: number,
+  status?: string,
+  date?: string,
+  table_id?: string,
+) => {
+  try {
+    const result = await axiosInstance.get(
+      `/order/all?page=${page}${status ? `&status=${status}` : ""}${
+        date ? `&date=${date}` : ""
+      }${table_id ? `&table_id=${table_id}` : ""}`,
+    );
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching all orders:", error);
+    toast.error("Error fetching all orders. Please try again.");
+    throw error;
+  }
+};
+
+export const getAllPayments = async (
+  page: number,
+  paymentType?: string,
+  date?: string,
+) => {
+  try {
+    const result = await axiosInstance.get(
+      `/payment/all?page=${page}${
+        paymentType ? `&payment_type=${paymentType}` : ""
+      }${date ? `&date=${date}` : ""}`,
+    );
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching all payments:", error);
+    toast.error("Error fetching all payments. Please try again.");
+    throw error;
+  }
+};

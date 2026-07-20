@@ -6,6 +6,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import { useGetAllUsersAdmin } from "../hooks/auth.hook";
 
 const initialStaff = [
   {
@@ -73,6 +74,10 @@ export default function StaffDirectory() {
   const [tab, setTab] = useState("ALL");
   const [staff, setStaff] = useState(initialStaff);
   const tabs = ["ALL", "KITCHEN", "FLOOR"];
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { data: users } = useGetAllUsersAdmin(currentPage);
+  console.log("users is", users);
 
   const handleEdit = (person) => {
     // Wire this up to your edit modal / form
@@ -128,7 +133,7 @@ export default function StaffDirectory() {
 
           {/* Table rows */}
           <div>
-            {staff.map((person, idx) => (
+            {users?.data?.map((person, idx) => (
               <div
                 key={person.id}
                 className={`group grid grid-cols-[2fr_1.5fr_1fr_1fr_0.7fr] items-center px-8 py-5 transition-colors hover:bg-neutral-50 ${
@@ -137,9 +142,13 @@ export default function StaffDirectory() {
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold ${person.avatarBg} ${person.avatarText}`}
+                    className={`flex h-10 bg-neutral-800 text-white w-10 items-center justify-center rounded-full text-sm font-semibold `}
                   >
-                    {person.initials}
+                    {person?.name
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()}
                   </div>
                   <div>
                     <div className="text-[16px] font-[font2] font-semibold text-neutral-900">
@@ -156,11 +165,15 @@ export default function StaffDirectory() {
                 </div>
 
                 <div>
-                  <StatusBadge status={person.status} />
+                  <StatusBadge
+                    status={person.is_active ? "Active" : "On Leave"}
+                  />
                 </div>
 
                 <div className="text-[15px] font-[font2] text-neutral-500">
-                  {person.date}
+                  {person.created_at
+                    ? new Date(person.created_at).toLocaleDateString()
+                    : ""}
                 </div>
 
                 {/* Actions: hidden until row hover, then fade/slide in */}
@@ -199,15 +212,18 @@ export default function StaffDirectory() {
               <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-300 bg-white text-neutral-400 hover:bg-neutral-50">
                 <ChevronLeft size={16} />
               </button>
-              <button className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-sm font-semibold text-white">
-                1
-              </button>
-              <button className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-semibold text-neutral-500 hover:bg-neutral-100">
-                2
-              </button>
-              <button className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-semibold text-neutral-500 hover:bg-neutral-100">
-                3
-              </button>
+
+              {[1, 2, 3].map((item) => (
+                <button
+                  onClick={() => {
+                    setCurrentPage(item);
+                  }}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-sm font-semibold text-white"
+                >
+                  {item}
+                </button>
+              ))}
+
               <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-300 bg-white text-neutral-600 hover:bg-neutral-50">
                 <ChevronRight size={16} />
               </button>

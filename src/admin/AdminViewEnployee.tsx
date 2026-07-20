@@ -1,6 +1,10 @@
 import React from "react";
 import StaffDirectory from "./ss";
-import { useCheckAuth, useGetUserStats } from "../hooks/auth.hook";
+import {
+  useCheckAuth,
+  useGetAllUsersAdmin,
+  useGetUserStats,
+} from "../hooks/auth.hook";
 
 const AdminViewEnployee = () => {
   const row = [
