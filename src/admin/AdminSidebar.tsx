@@ -35,7 +35,7 @@ const AdminSidebar = () => {
   }, []);
 
   return (
-    <div className="flex bg-[#F6F3EF] flex-col gap-15 justify-between  pt-10 w-[14%] h-screen border-[#C8C7BF] border-r-2">
+    <div className="flex fixed bg-[#F6F3EF] flex-col gap-15 justify-between  pt-10 w-[17%] h-screen border-[#C8C7BF] border-r-2">
       <div className="flex pl-6 flex-col gap-15">
         <div className="">
           <h1 className="font-[font4] text-xl">The Banquet Palace</h1>

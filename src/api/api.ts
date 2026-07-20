@@ -134,9 +134,11 @@ export const getPaymentStats = async () => {
   }
 };
 
-export const getAllUsersAdmin = async (page: number) => {
+export const getAllUsersAdmin = async (page: number, category?: string) => {
   try {
-    const result = await axiosInstance.get(`/auth/users?page=${page}`);
+    const result = await axiosInstance.get(
+      `/auth/users?page=${page}${category ? `&category=${category}` : ""}`,
+    );
     return result.data;
   } catch (error) {
     console.error("Error fetching all users:", error);
@@ -153,7 +155,7 @@ export const getAllOrders = async (
 ) => {
   try {
     const result = await axiosInstance.get(
-      `/order/all?page=${page}${status ? `&status=${status}` : ""}${
+      `/order/order?page=${page}${status ? `&status=${status}` : ""}${
         date ? `&date=${date}` : ""
       }${table_id ? `&table_id=${table_id}` : ""}`,
     );
@@ -173,7 +175,7 @@ export const getAllPayments = async (
   try {
     const result = await axiosInstance.get(
       `/payment/all?page=${page}${
-        paymentType ? `&payment_type=${paymentType}` : ""
+        paymentType ? `&paymentType=${paymentType}` : ""
       }${date ? `&date=${date}` : ""}`,
     );
     return result.data;

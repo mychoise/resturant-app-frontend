@@ -166,11 +166,11 @@ export const useGetPaymentStats = () => {
   return { data, isLoading, isError };
 };
 
-export const useGetAllUsersAdmin = (page: number) => {
+export const useGetAllUsersAdmin = (page: number, category?: string) => {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["all-users-admin", page],
+    queryKey: ["all-users-admin", page, category],
     queryFn: async () => {
-      const res = await getAllUsersAdmin(page);
+      const res = await getAllUsersAdmin(page, category);
       console.log("response for all users admin is", res);
       return res;
     },
@@ -194,6 +194,13 @@ export const useGetAllOrdersAdmin = (
       return res;
     },
     retry: false,
+  });
+
+  console.log("useGetAllOrdersAdmin called with:", {
+    page,
+    status,
+    date,
+    table_id,
   });
 
   return { data, isLoading, isError };

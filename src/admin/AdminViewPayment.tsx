@@ -13,30 +13,6 @@ import {
 } from "lucide-react";
 import { useGetAllPaymentsAdmin, useGetPaymentStats } from "../hooks/auth.hook";
 
-const transactions = [
-  {
-    id: "#TXN-882104",
-    date: new Date(2023, 9, 24, 19, 42),
-    type: "Cash",
-    category: "cash",
-    amount: "$452.00",
-  },
-  {
-    id: "#TXN-882103",
-    date: new Date(2023, 9, 24, 19, 15),
-    type: "eSewa Digital",
-    category: "online",
-    amount: "$1,280.50",
-  },
-  {
-    id: "#TXN-882098",
-    date: new Date(2023, 9, 24, 18, 30),
-    type: "eSewa Digital",
-    category: "online",
-    amount: "$64.00",
-  },
-];
-
 const PAYMENT_OPTIONS = [
   { label: "All Types", value: "all" },
   { label: "Cash", value: "cash" },
@@ -55,6 +31,15 @@ const formatDate = (d) =>
     day: "numeric",
     year: "numeric",
   });
+
+// Formats a Date into "YYYY-MM-DD" (UTC) — used both for display-independent
+// comparisons and as the query param sent to the API.
+const toISODateString = (d) => {
+  const year = d.getUTCFullYear();
+  const month = (d.getUTCMonth() + 1).toString().padStart(2, "0");
+  const day = d.getUTCDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 const formatDateTime = (d) => {
   const date = new Date(d);
@@ -208,6 +193,20 @@ function DatePicker({ selected, onChange }) {
               );
             })}
           </div>
+
+          {/* Lets the user clear the date filter without hunting for "today" */}
+          <div className="mt-3 pt-3 border-t border-neutral-100 flex justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                onChange(null);
+                setOpen(false);
+              }}
+              className="text-xs font-medium text-neutral-500 hover:text-neutral-800"
+            >
+              Clear date
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -273,15 +272,69 @@ function PaymentTypeSelect({ value, onChange }) {
 
 /* ---------- Page ---------- */
 export default function AdminViewPayment() {
-  const [selectedDate, setSelectedDate] = useState(new Date(2023, 9, 24));
+  // null = no date filter applied (shows all dates)
+  const [selectedDate, setSelectedDate] = useState(null);
   const [paymentType, setPaymentType] = useState("all");
+  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading } = useGetPaymentStats();
+  const { data } = useGetPaymentStats();
 
-  const { data: payments } = useGetAllPaymentsAdmin(1);
-  console.log("payments data is", payments?.data);
+  // Only send real filter values to the API — "all" and null should not be
+  // sent as query params, since the hook/API treats their absence as "no filter".
+  const apiPaymentType = paymentType === "all" ? undefined : paymentType;
+  const apiDate = selectedDate ? toISODateString(selectedDate) : undefined;
 
-  const filtered = payments?.data;
+  const { data: payments, isLoading: paymentsLoading } = useGetAllPaymentsAdmin(
+    currentPage,
+    apiPaymentType,
+    apiDate,
+  );
+
+  // Reset back to page 1 whenever a filter changes, so the user isn't
+  // stranded on e.g. page 4 of a filter that only has 1 page of results.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedDate, paymentType]);
+
+  // The API now does the filtering (paymentType + date are sent as query
+  // params), so we just render what comes back for the current page.
+  const rows = payments?.data ?? [];
+
+  // Pagination metadata — falls back gracefully if the API response
+  // doesn't include explicit page-count info under one of these keys.
+  const totalPages =
+    payments?.totalPages ??
+    payments?.total_pages ??
+    payments?.meta?.totalPages ??
+    5;
+  const totalCount =
+    payments?.total ?? payments?.meta?.total ?? rows.length ?? 0;
+
+  const canGoPrev = currentPage > 1;
+  const canGoNext = currentPage < totalPages;
+
+  function getPageNumbers(current, total) {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    const pages = new Set([1, total, current, current - 1, current + 1]);
+    const sorted = [...pages]
+      .filter((p) => p >= 1 && p <= total)
+      .sort((a, b) => a - b);
+
+    const withEllipses = [];
+    sorted.forEach((page, idx) => {
+      if (idx > 0 && page - sorted[idx - 1] > 1) {
+        withEllipses.push("...");
+      }
+      withEllipses.push(page);
+    });
+    return withEllipses;
+  }
+
+  const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
     <div className="min-h-screen w-full bg-[#FBF9F4] p-8">
@@ -342,8 +395,24 @@ export default function AdminViewPayment() {
         {/* Filter bar */}
         <div className="relative z-10 rounded-2xl border border-neutral-200 bg-white px-6 py-4 mb-6 flex items-end justify-between flex-wrap gap-4">
           <div className="flex items-end gap-4 flex-wrap">
-            <DatePicker selected={selectedDate} onChange={setSelectedDate} />
+            <DatePicker
+              selected={selectedDate ?? new Date()}
+              onChange={setSelectedDate}
+            />
             <PaymentTypeSelect value={paymentType} onChange={setPaymentType} />
+
+            {(selectedDate || paymentType !== "all") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedDate(null);
+                  setPaymentType("all");
+                }}
+                className="text-sm font-medium text-neutral-500 hover:text-neutral-800 pb-2"
+              >
+                Reset filters
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -367,44 +436,86 @@ export default function AdminViewPayment() {
           </div>
 
           <div>
-            {filtered?.map((txn, idx) => (
-              <div
-                key={txn.id}
-                className={`grid grid-cols-[1.2fr_1.3fr_1.3fr_1fr_0.3fr] items-center px-6 py-4 hover:bg-neutral-50 ${
-                  idx !== filtered?.length - 1
-                    ? "border-b border-neutral-200"
-                    : ""
-                }`}
-              >
-                <div className="text-sm font-semibold text-neutral-900">
-                  #{txn?.id.split("-")[1] + "-" + txn?.id.split("-")[2]}
-                </div>
-                <div className="text-sm text-neutral-500">
-                  {formatDateTime(txn?.created_at)}
-                </div>
-                <div className="flex items-center gap-3">
-                  <PaymentIcon category={txn.payment_type} />
-                  <span className="text-sm text-neutral-800">
-                    {txn?.payment_type.charAt(0).toUpperCase() +
-                      txn?.payment_type.slice(1)}
-                  </span>
-                </div>
-                <div className="text-right text-sm font-bold text-neutral-900">
-                  ${txn?.total_price}
-                </div>
-                <div className="flex justify-end">
-                  <button className="text-neutral-400 hover:text-neutral-700">
-                    <MoreVertical size={18} />
-                  </button>
-                </div>
+            {paymentsLoading && (
+              <div className="px-6 py-10 text-center text-sm text-neutral-400">
+                Loading transactions…
               </div>
-            ))}
+            )}
 
-            {filtered?.length === 0 && (
+            {!paymentsLoading &&
+              rows.map((txn, idx) => (
+                <div
+                  key={txn.id}
+                  className={`grid grid-cols-[1.2fr_1.3fr_1.3fr_1fr_0.3fr] items-center px-6 py-4 hover:bg-neutral-50 ${
+                    idx !== rows.length - 1 ? "border-b border-neutral-200" : ""
+                  }`}
+                >
+                  <div className="text-sm font-semibold text-neutral-900">
+                    #{txn?.id.split("-")[1] + "-" + txn?.id.split("-")[2]}
+                  </div>
+                  <div className="text-sm text-neutral-500">
+                    {formatDateTime(txn?.created_at)}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <PaymentIcon category={txn.payment_type} />
+                    <span className="text-sm text-neutral-800">
+                      {txn?.payment_type.charAt(0).toUpperCase() +
+                        txn?.payment_type.slice(1)}
+                    </span>
+                  </div>
+                  <div className="text-right text-sm font-bold text-neutral-900">
+                    ${txn?.total_price}
+                  </div>
+                  <div className="flex justify-end">
+                    <button className="text-neutral-400 hover:text-neutral-700">
+                      <MoreVertical size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+            {!paymentsLoading && rows.length === 0 && (
               <div className="px-6 py-10 text-center text-sm text-neutral-400">
                 No transactions match this filter.
               </div>
             )}
+          </div>
+
+          {/* Footer / Pagination */}
+          <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-200">
+            <div className="text-sm text-neutral-500">
+              Showing {rows.length} of {totalCount} transactions
+              {totalPages > 1 && (
+                <span className="ml-2 text-neutral-400">
+                  (page {page} of {totalPages})
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {pageNumbers.map((item, idx) =>
+                item === "..." ? (
+                  <span
+                    key={`ellipsis-${idx}`}
+                    className="flex h-8 w-8 items-center justify-center text-sm text-neutral-400"
+                  >
+                    …
+                  </span>
+                ) : (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setCurrentPage(item)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-semibold ${
+                      item === currentPage
+                        ? "bg-neutral-900 text-white"
+                        : "border border-neutral-300 bg-white text-neutral-600 hover:bg-neutral-50"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ),
+              )}
+            </div>
           </div>
         </div>
       </div>
