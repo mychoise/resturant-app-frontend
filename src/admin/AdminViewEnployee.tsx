@@ -1,5 +1,6 @@
 import React from "react";
 import StaffDirectory from "./ss";
+import { useCheckAuth, useGetUserStats } from "../hooks/auth.hook";
 
 const AdminViewEnployee = () => {
   const row = [
@@ -15,11 +16,11 @@ const AdminViewEnployee = () => {
       name: "New Hires",
       value: "05",
     },
-    {
-      name: "Turnover rate",
-      value: "26%",
-    },
   ];
+
+  const { data, isLoading, isError } = useGetUserStats();
+
+  console.log("data is", data);
   return (
     <div className="bg-[#FCF9F5] pl-30 pr-30 pt-6">
       <h1 className="text-3xl font-[font4]">User Management</h1>
@@ -39,7 +40,7 @@ const AdminViewEnployee = () => {
       </div>
 
       <div className="flex gap-8 mt-10 ">
-        {row.map((item, index) => (
+        {data?.map((item, index) => (
           <div
             key={index}
             className="bg-white p-6 w-[24%] pb-3 pt-4 h-27 pl-10 pr-10 border border-[#C8C7BF] rounded-xl"

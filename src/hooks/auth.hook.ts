@@ -6,6 +6,9 @@ import {
   getAllOrderedItems,
   createPayment,
   getAllMenuItems,
+  getUserStats,
+  getOrderStats,
+  getPaymentStats,
 } from "../api/api";
 import { useWaiterStore } from "../store/waiter.store";
 import { toast } from "react-hot-toast";
@@ -91,31 +94,71 @@ export const usePay = () => {
       console.log("Payment successful:", data);
     },
     onError: (error) => {
-        const errorMessage =
-          typeof error.response?.data?.message === "string"
-            ? error.response.data.message
-            : error.response?.data?.message?.[0] // If it's an array
-              ? error.response.data.message[0]
-              : error.message || "Payment failed. Please try again.";
+      const errorMessage =
+        typeof error.response?.data?.message === "string"
+          ? error.response.data.message
+          : error.response?.data?.message?.[0] // If it's an array
+            ? error.response.data.message[0]
+            : error.message || "Payment failed. Please try again.";
 
-        console.error("Payment error:", errorMessage);
+      console.error("Payment error:", errorMessage);
 
-        toast.error(errorMessage);
-      },
+      toast.error(errorMessage);
+    },
   });
 };
 
-
 export const useGetMenu = () => {
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ["menu"],
-        queryFn: async () => {
-            const res = await getAllMenuItems();
-            console.log("response for menu is", res);
-            return res;
-        },
-        retry: false,
-    })
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["menu"],
+    queryFn: async () => {
+      const res = await getAllMenuItems();
+      console.log("response for menu is", res);
+      return res;
+    },
+    retry: false,
+  });
 
-    return { isLoading, isError, data };
-}
+  return { isLoading, isError, data };
+};
+
+export const useGetUserStats = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["user-stats"],
+    queryFn: async () => {
+      const res = await getUserStats();
+      console.log("response for user stats is", res);
+      return res;
+    },
+    retry: false,
+  });
+  return { data, isLoading, isError };
+};
+
+export const useGetOrderStats = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["order-stats"],
+    queryFn: async () => {
+      const res = await getOrderStats();
+      console.log("response for order stats is", res);
+      return res;
+    },
+    retry: false,
+  });
+
+  return { data, isLoading, isError };
+};
+
+export const useGetPaymentStats = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["payment-stats"],
+    queryFn: async () => {
+      const res = await getPaymentStats();
+      console.log("response for payment stats is", res);
+      return res;
+    },
+    retry: false,
+  });
+
+  return { data, isLoading, isError };
+};

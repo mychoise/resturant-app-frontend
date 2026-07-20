@@ -11,6 +11,7 @@ import {
   Printer,
   MoreVertical,
 } from "lucide-react";
+import { useGetPaymentStats } from "../hooks/auth.hook";
 
 const transactions = [
   {
@@ -262,6 +263,8 @@ export default function AdminViewPayment() {
     return matchesDate && matchesType;
   });
 
+  const { data, isLoading } = useGetPaymentStats();
+
   return (
     <div className="min-h-screen w-full bg-[#FBF9F4] p-8">
       <div className="mx-auto max-w-6xl">
@@ -285,11 +288,11 @@ export default function AdminViewPayment() {
               TOTAL REVENUE (MTD)
             </p>
             <p className="text-4xl font-bold text-neutral-900 mb-4">
-              $142,850.00
+              ${data?.totalRevenue || "0.00"}
             </p>
             <div className="flex items-center gap-1.5 text-sm font-medium text-amber-700">
-              <TrendingUp size={16} />
-              +12.4% from last month
+              <h1>Total Payments:</h1>
+              <span>{data?.totalPayment}</span>{" "}
             </div>
           </div>
 
@@ -299,7 +302,9 @@ export default function AdminViewPayment() {
             </div>
             <div>
               <p className="text-sm text-neutral-500 mb-1">Cash On Hand</p>
-              <p className="text-2xl font-bold text-neutral-900">$12,402.15</p>
+              <p className="text-2xl font-bold text-neutral-900">
+                ${data.totalCash}
+              </p>
             </div>
           </div>
 
@@ -309,7 +314,9 @@ export default function AdminViewPayment() {
             </div>
             <div>
               <p className="text-sm text-neutral-500 mb-1">eSewa Digital</p>
-              <p className="text-2xl font-bold text-neutral-900">$130,447.85</p>
+              <p className="text-2xl font-bold text-neutral-900">
+                ${data.totalOnline}
+              </p>
             </div>
           </div>
         </div>

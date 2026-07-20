@@ -8,6 +8,7 @@ import {
   ChevronRight,
   MoreHorizontal,
 } from "lucide-react";
+import { useGetOrderStats } from "../hooks/auth.hook";
 
 const orders = [
   {
@@ -294,6 +295,8 @@ export default function AdminOrderView() {
     const matchesDate = isSameDay(order.date, selectedDate);
     return matchesTab && matchesTable && matchesDate;
   });
+  const { data, isLoading, isError } = useGetOrderStats();
+  console.log("order data is", data);
 
   return (
     <div className="min-h-screen w-full bg-[#FCF9F5] p-6">
@@ -311,10 +314,10 @@ export default function AdminOrderView() {
               holding at 42 minutes.
             </p>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-amber-600">88%</span>
-              <span className="text-sm text-neutral-500">
-                Kitchen Efficiency
+              <span className="text-4xl font-bold text-amber-600">
+                {data?.kithcenLoad}%
               </span>
+              <span className="text-sm text-neutral-500">Kitchen Load</span>
             </div>
           </div>
 
@@ -323,7 +326,9 @@ export default function AdminOrderView() {
             <ClipboardList className="text-amber-400" size={28} />
             <div>
               <p className="text-sm text-neutral-400 mb-1">Pending Cooking</p>
-              <p className="text-4xl font-bold text-white">12</p>
+              <p className="text-4xl font-bold text-white">
+                {data?.pendingCooking}
+              </p>
             </div>
           </div>
 
@@ -332,7 +337,9 @@ export default function AdminOrderView() {
             <Flame className="text-neutral-900" size={28} fill="currentColor" />
             <div>
               <p className="text-sm text-amber-900 mb-1">Served Today</p>
-              <p className="text-4xl font-bold text-neutral-900">04</p>
+              <p className="text-4xl font-bold text-neutral-900">
+                {data?.served}
+              </p>
             </div>
           </div>
         </div>
