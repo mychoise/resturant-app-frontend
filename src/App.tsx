@@ -132,7 +132,7 @@ const App = () => {
               user && user?.role === "waiter" ? (
                 <TablePage />
               ) : user && user?.role === "kitchen" ? (
-                <WorkflowBoard />
+                <Navigate to="/kitchen" replace />
               ) : user && user?.role === "admin" ? (
                 <Navigate to="/admin" replace />
               ) : (

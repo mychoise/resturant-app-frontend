@@ -7,5 +7,5 @@ const token =
 export const socket = io("http://192.168.1.71:3000", {
   withCredentials: true,
   transports: ["polling", "websocket"],
-  autoConnect: false,
+  autoConnect: true,
 });
