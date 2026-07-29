@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const MenuAddInPrevious = () => {
   const [selectedCategory, setSelectedCategory] = useState(
-   "e9ab886b-3ec2-44b6-ba89-36219a535717",
+    "e9ab886b-3ec2-44b6-ba89-36219a535717",
   );
   const navigate = useNavigate();
   const {
@@ -39,22 +39,21 @@ const MenuAddInPrevious = () => {
     isError,
   } = usePreviousOrders(table?.id || "");
 
-  const {data} = useGetMenu()
+  const { data } = useGetMenu();
 
-    console.log("result is ", result?.orderedItem);
+  console.log("result is ", result?.orderedItem);
 
-    const BREAKPOINT_SM = 640; // Tailwind's sm breakpoint
+  const BREAKPOINT_SM = 640; // Tailwind's sm breakpoint
 
-    const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(window.innerWidth);
 
-    useEffect(() => {
-      const handleResize = () => setWidth(window.innerWidth);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-
-    const [showCartMobile, setshowCartMobile] = useState(width > BREAKPOINT_SM);
+  const [showCartMobile, setshowCartMobile] = useState(width > BREAKPOINT_SM);
 
   const orderData = null;
 
@@ -67,6 +66,7 @@ const MenuAddInPrevious = () => {
   useEffect(() => {
     const handleOrderCreated = (order: any) => {
       console.log("order saved:", order);
+      toast.success("Order sent to kitchen successfully");
       navigate("/success");
     };
 
@@ -215,7 +215,9 @@ const MenuAddInPrevious = () => {
                     setSelectedCategory(item.id);
                   }}
                 >
-                  <h1 className="font-[font2] text-14 tracking-wide">{item.name}</h1>
+                  <h1 className="font-[font2] text-14 tracking-wide">
+                    {item.name}
+                  </h1>
                 </button>
               ))}
             </div>
@@ -346,130 +348,130 @@ const MenuAddInPrevious = () => {
               </div>
             </div>
           </div>
-              </div>
+        </div>
 
-
-              <div className={`fixed sm:fixed left-0 pb-20 z-50  sm:left-auto sm:right-0 w-full sm:w-[23%]`}>
-                  <div className={`bg-[#FBF8F4] border-l ${showCartMobile ? "" : "hidden"}  overflow-scroll sm:fixed   border-[#C2C1B9] mr-0 -mt-10 h-screen sm:h-screen scroll-auto  left-0 sm:left-auto sm:right-0 w-full sm:w-[23%]`} >
-                  <div
-                      className="flex sm:hidden  w-full justify-end  items-end pt-5 pr-5">
-                      <button onClick={()=>setshowCartMobile(false)}>
-                          <X className="text-right" size={"30"} color="red" />
-
-                      </button>
-                      </div>
-              <h1 className="text-center font-[font4] tracking-wider text-[32px]">
-                GUEST CHECK
-              </h1>
-              <h1 className="text-center font-[font2] mt-0.5 tracking-widest text-[16px] text-[#474741]">
-                THE BANQUET PALACE
-              </h1>
-                    {/*Table and guest  diisplay*/}
-                    <div className=" flex gap-10 justify-evenly border-t border-[#F0EEE8] border-b w-[80%] h-24 ml-10 mt-10">
-                      <div className="mt-4 ml-7">
-                        <h1 className="text-[18px] font-[font2] uppercase text-[#474741]">
-                          Table
-                        </h1>
-                        <h1 className="text-[18px] font-[font5] text-center">
-                          {String(table?.table_number).padStart(2, "0")}
-                        </h1>
-                      </div>
-                      <div className=" border h-[80%] mt-3 border-[#F0EEE8]"></div>
-                      <div className="mt-4 mr-7">
-                        <h1 className="text-[18px]  font-[font2] uppercase text-[#474741]">
-                          Guests
-                        </h1>
-                        <h1 className="text-[18px] font-[font5] text-center">4</h1>
-                      </div>
-                    </div>
-                    {/*Item details*/}
-
-                    <div className=" h-120 border-b  overflow-y-auto  w-full pl-8 pr-8 p-5 border-t mt-8  border-[#EBE8E4]">
-                      <div className=" border-[#EBE8E4] uppercase border-b full pb-3 flex-row text-[16px] tracking-widest font-[font2] text-[#474741] justify-between items-center flex">
-                        <h1>Item</h1>
-                        <h1>Price</h1>
-                      </div>
-                      <div></div>
-                      <div className="w-full pt-5">
-                        {/*ugf*/}
-                        {cartItems.length === 0 && (
-                          <div className=" w-full h-90 items-center justify-center flex">
-                            <h1 className="font-[font2] text-[#474741] text-[16px]">
-                              NO ITEM IN CART
-                            </h1>
-                          </div>
-                        )}
-
-                        {cartItems.map((item: any) => (
-                          <div
-                            key={item.id}
-                            className=" flex mb-6 pb-2 border-[#F0EEE8] border-b-2 justify-between"
-                          >
-                            <div className=" flex gap-5">
-                              <div className="bg-[#FDFBF9] border border-[#EBE8E4] flex gap-3  flex-col justify-center items-center  w-9 rounded-3xl h-22">
-                                <button onClick={() => increaseQantity(item.id)}>
-                                  <Plus className="text-[#474741]" size={14} />
-                                </button>
-                                <div className=" w-[70%] pl-2">
-                                  <input
-                                    readOnly={true}
-                                    value={
-                                      cartItems.find(
-                                        (cartItem: any) => cartItem.id === item.id,
-                                      )?.quantity || 0
-                                    }
-                                    type="number"
-                                    className="w-full font-[font5] outline-0 bg-transparent border-none text-[#18
-                                    1916]"
-                                  ></input>
-                                </div>
-                                <button onClick={() => decreaseQantity(item.id)}>
-                                  <Minus className="text-[#474741]" size={14} />
-                                </button>
-                              </div>
-                              <div className="mt-1">
-                                <h1 className="font-[font5] text-[#181916] text-[17px]">
-                                  {item.name}
-                                </h1>
-                              </div>
-                            </div>
-                            <div className="flex flex-col items-center gap-2">
-                              <h1 className="font-[font5] mt-1 ">${item.price}</h1>
-                              <X
-                                onClick={() => deleteItem(item.id)}
-                                size={17}
-                                className="-mr-9 text-[#927F83] cursor-pointer mt-2 hover:text-red-500"
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="w-full h-40  flex items-center justify-between flex-col">
-                      <button
-                        onClick={() => sendToKitchen()}
-                        className={`text-[16px] w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
-                      >
-                        Send to kitchen
-                      </button>{" "}
-                      <button
-                        onClick={() => navigate("/checkout")}
-                        className={`text-[16px] flex items-center justify-center gap-6 w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
-                      >
-                        <CreditCard />
-                        Checkout
-                      </button>
-                  </div>
-              </div>
-                  </div>
-
-          </div>
-
-          <div className="bg-yellow-300 bottom-5 z-10 fixed sm:hidden right-5 flex items-center justify-center w-15 rounded-full h-15">
-              <button onClick={()=>setshowCartMobile(true)}>
-                  <ShoppingCart />
+        <div
+          className={`fixed sm:fixed left-0 pb-20 z-50  sm:left-auto sm:right-0 w-full sm:w-[23%]`}
+        >
+          <div
+            className={`bg-[#FBF8F4] border-l ${showCartMobile ? "" : "hidden"}  overflow-scroll sm:fixed   border-[#C2C1B9] mr-0 -mt-10 h-screen sm:h-screen scroll-auto  left-0 sm:left-auto sm:right-0 w-full sm:w-[23%]`}
+          >
+            <div className="flex sm:hidden  w-full justify-end  items-end pt-5 pr-5">
+              <button onClick={() => setshowCartMobile(false)}>
+                <X className="text-right" size={"30"} color="red" />
               </button>
+            </div>
+            <h1 className="text-center font-[font4] tracking-wider text-[32px]">
+              GUEST CHECK
+            </h1>
+            <h1 className="text-center font-[font2] mt-0.5 tracking-widest text-[16px] text-[#474741]">
+              THE BANQUET PALACE
+            </h1>
+            {/*Table and guest  diisplay*/}
+            <div className=" flex gap-10 justify-evenly border-t border-[#F0EEE8] border-b w-[80%] h-24 ml-10 mt-10">
+              <div className="mt-4 ml-7">
+                <h1 className="text-[18px] font-[font2] uppercase text-[#474741]">
+                  Table
+                </h1>
+                <h1 className="text-[18px] font-[font5] text-center">
+                  {String(table?.table_number).padStart(2, "0")}
+                </h1>
               </div>
+              <div className=" border h-[80%] mt-3 border-[#F0EEE8]"></div>
+              <div className="mt-4 mr-7">
+                <h1 className="text-[18px]  font-[font2] uppercase text-[#474741]">
+                  Guests
+                </h1>
+                <h1 className="text-[18px] font-[font5] text-center">4</h1>
+              </div>
+            </div>
+            {/*Item details*/}
+
+            <div className=" h-120 border-b  overflow-y-auto  w-full pl-8 pr-8 p-5 border-t mt-8  border-[#EBE8E4]">
+              <div className=" border-[#EBE8E4] uppercase border-b full pb-3 flex-row text-[16px] tracking-widest font-[font2] text-[#474741] justify-between items-center flex">
+                <h1>Item</h1>
+                <h1>Price</h1>
+              </div>
+              <div></div>
+              <div className="w-full pt-5">
+                {/*ugf*/}
+                {cartItems.length === 0 && (
+                  <div className=" w-full h-90 items-center justify-center flex">
+                    <h1 className="font-[font2] text-[#474741] text-[16px]">
+                      NO ITEM IN CART
+                    </h1>
+                  </div>
+                )}
+
+                {cartItems.map((item: any) => (
+                  <div
+                    key={item.id}
+                    className=" flex mb-6 pb-2 border-[#F0EEE8] border-b-2 justify-between"
+                  >
+                    <div className=" flex gap-5">
+                      <div className="bg-[#FDFBF9] border border-[#EBE8E4] flex gap-3  flex-col justify-center items-center  w-9 rounded-3xl h-22">
+                        <button onClick={() => increaseQantity(item.id)}>
+                          <Plus className="text-[#474741]" size={14} />
+                        </button>
+                        <div className=" w-[70%] pl-2">
+                          <input
+                            readOnly={true}
+                            value={
+                              cartItems.find(
+                                (cartItem: any) => cartItem.id === item.id,
+                              )?.quantity || 0
+                            }
+                            type="number"
+                            className="w-full font-[font5] outline-0 bg-transparent border-none text-[#18
+                                    1916]"
+                          ></input>
+                        </div>
+                        <button onClick={() => decreaseQantity(item.id)}>
+                          <Minus className="text-[#474741]" size={14} />
+                        </button>
+                      </div>
+                      <div className="mt-1">
+                        <h1 className="font-[font5] text-[#181916] text-[17px]">
+                          {item.name}
+                        </h1>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <h1 className="font-[font5] mt-1 ">${item.price}</h1>
+                      <X
+                        onClick={() => deleteItem(item.id)}
+                        size={17}
+                        className="-mr-9 text-[#927F83] cursor-pointer mt-2 hover:text-red-500"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="w-full h-40  flex items-center justify-between flex-col">
+              <button
+                onClick={() => sendToKitchen()}
+                className={`text-[16px] w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
+              >
+                Send to kitchen
+              </button>{" "}
+              <button
+                onClick={() => navigate("/checkout")}
+                className={`text-[16px] flex items-center justify-center gap-6 w-[85%] bg-black cursor-pointer  tracking-widest  text-[#F9F3EB] font-bold mt-5  pt-4 pb-4 uppercase font-[font2]  text-center border border-[#C8C7BF]`}
+              >
+                <CreditCard />
+                Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-yellow-300 bottom-5 z-10 fixed sm:hidden right-5 flex items-center justify-center w-15 rounded-full h-15">
+        <button onClick={() => setshowCartMobile(true)}>
+          <ShoppingCart />
+        </button>
+      </div>
     </div>
   );
 };
